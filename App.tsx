@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import FileUpload from './components/FileUpload';
@@ -379,7 +378,8 @@ const App: React.FC = () => {
             (progress, processedRows) => { 
                  setCurrentJob(prev => prev ? {
                     ...prev,
-                    progress: (prev.progress || 60) + (progress * 0.4), 
+                    // Progress: 0-50% for validation, 50-100% for categorization
+                    progress: 50 + (progress * 0.5),
                     processedRows,
                 } : null);
             }

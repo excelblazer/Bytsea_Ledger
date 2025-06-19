@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Transaction, AccountingCategory, PredictionSourceType } from '../types';
 import { getAllSpecificCoANames } from '../services/accountingRulesService';
 import StatusBadge from './StatusBadge';
-import * as XLSX from 'xlsx';
+import ExcelJS from 'exceljs';
 
 interface TransactionTableProps {
   transactions: Transaction[];
@@ -30,7 +30,7 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ transactions, onUpd
     onUpdateTransaction(transactionId, { userOverrideCategory: newSpecificCategory });
   };
 
-  const handleExport = () => {
+  const handleExport = async () => {
     const dataToExport = transactions.map(tx => ({
       'Date': tx.date,
       'Transaction Type (AI)': tx.aiTransactionType || '-',
@@ -49,23 +49,27 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ transactions, onUpd
       'Notes': tx.notes || ''
     }));
 
-    const worksheet = XLSX.utils.json_to_sheet(dataToExport);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Reviewed Transactions');
-    
-    const colWidths = Object.keys(dataToExport[0] || {}).map(key => {
-        let maxLen = key.length;
-        dataToExport.forEach(row => {
-            const val = (row as any)[key];
-            const cellLen = val ? String(val).length : 0;
-            if (cellLen > maxLen) maxLen = cellLen;
-        });
-        return { wch: Math.min(maxLen + 2, 50) }; 
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Reviewed Transactions');
+    worksheet.columns = Object.keys(dataToExport[0] || {}).map(key => ({ header: key, key, width: Math.min((key.length + 2), 50) }));
+    dataToExport.forEach(row => worksheet.addRow(row));
+    worksheet.columns.forEach(column => {
+      let maxLen = column.header.length;
+      column.eachCell({ includeEmpty: true }, cell => {
+        const cellLen = cell.value ? String(cell.value).length : 0;
+        if (cellLen > maxLen) maxLen = cellLen;
+      });
+      column.width = Math.min(maxLen + 2, 50);
     });
-    worksheet['!cols'] = colWidths;
-
     const exportFileName = jobFileName ? `${jobFileName.split('.')[0]}_Reviewed_Transactions.xlsx` : 'Reviewed_Transactions.xlsx';
-    XLSX.writeFile(workbook, exportFileName);
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = exportFileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
 

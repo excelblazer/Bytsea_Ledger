@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { UploadIcon, CheckCircleIcon, XCircleIcon } from './icons';
-import * as XLSX from 'xlsx';
+import ExcelJS from 'exceljs';
 
 interface FileUploadProps {
   onFileUploaded: (file: File, fileContent: string, fileType: 'csv' | 'excel') => void;
@@ -91,11 +91,23 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFileUploaded, disabled, reset
           const lines = result.trim().split('\n').slice(0, MAX_PREVIEW_ROWS);
           previewRows = lines.map(line => (line.match(/(".*?"|[^",]+)(?=\s*,|\s*$)/g) || []).map(v => v.replace(/^"|"$/g, '').trim()));
         } else if (detectedFileType === 'excel' && result instanceof ArrayBuffer) {
-          const workbook = XLSX.read(result, { type: 'array', cellDates: true, dateNF: 'yyyy-mm-dd' });
-          const firstSheetName = workbook.SheetNames[0];
-          const worksheet = workbook.Sheets[firstSheetName];
-          const jsonData = XLSX.utils.sheet_to_json<string[]>(worksheet, { header: 1, defval: '', rawNumbers: false });
-          previewRows = jsonData.slice(0, MAX_PREVIEW_ROWS).map(row => row.map(cell => String(cell === null || cell === undefined ? '' : cell)));
+          const workbook = new ExcelJS.Workbook();
+          workbook.xlsx.load(result).then(() => {
+            const worksheet = workbook.worksheets[0];
+            const jsonData: string[][] = [];
+            worksheet.eachRow({ includeEmpty: true }, (row, rowNumber) => {
+              if (rowNumber <= MAX_PREVIEW_ROWS) {
+                jsonData.push(row.values.slice(1).map(cell => cell === null || cell === undefined ? '' : String(cell)));
+              }
+            });
+            setRawRowsPreview(jsonData);
+            setIsStartRowConfirmed(false);
+          }).catch((previewError) => {
+            console.error("Error generating file preview:", previewError);
+            setError("Could not generate file preview. The file might be corrupted or in an unexpected format.");
+            setRawRowsPreview([]);
+          });
+          return;
         }
         setRawRowsPreview(previewRows);
         setIsStartRowConfirmed(false); 
@@ -147,7 +159,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFileUploaded, disabled, reset
     setIsDragging(false);
   }, []);
 
-  const handleConfirmStartRow = () => {
+  const handleConfirmStartRow = async () => {
     if (!selectedRawFile || !rawFileContentForProcessing || !rawFileType) {
       setError("No file content to process. Please re-upload.");
       return;
@@ -170,20 +182,37 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFileUploaded, disabled, reset
             }
             finalCsvContent = lines.slice(startRow - 1).join('\n');
         } else if (rawFileType === 'excel' && rawFileContentForProcessing instanceof ArrayBuffer) {
-            const workbook = XLSX.read(rawFileContentForProcessing, { type: 'array', cellDates: true, dateNF: 'yyyy-mm-dd' });
-            const firstSheetName = workbook.SheetNames[0];
-            const worksheet = workbook.Sheets[firstSheetName];
-            
-            const allRowsJson = XLSX.utils.sheet_to_json<string[]>(worksheet, { header: 1, defval: '', rawNumbers: false });
-             if (startRow > allRowsJson.length && allRowsJson.length > 0) {
-                setError(`Start row (${startRow}) is greater than total rows (${allRowsJson.length}) in Excel sheet.`);
+            const workbook = new ExcelJS.Workbook();
+            await workbook.xlsx.load(rawFileContentForProcessing);
+            const worksheet = workbook.worksheets[0];
+            // Extract all rows, normalize, and ensure all rows have the same number of columns as the header
+            const allRows: string[][] = [];
+            let maxColCount = 0;
+            worksheet.eachRow({ includeEmpty: true }, (row) => {
+                const values = (row.values as any[]).slice(1).map(cell => {
+                    if (cell === null || cell === undefined) return '';
+                    if (typeof cell === 'number') return cell.toString();
+                    if (typeof cell === 'string') return cell.trim();
+                    if (typeof cell === 'object' && cell.text) return String(cell.text).trim();
+                    return String(cell).trim();
+                });
+                allRows.push(values);
+                if (values.length > maxColCount) maxColCount = values.length;
+            });
+            // Pad all rows to maxColCount
+            for (let i = 0; i < allRows.length; i++) {
+                while (allRows[i].length < maxColCount) allRows[i].push('');
+            }
+            if (startRow > allRows.length && allRows.length > 0) {
+                setError(`Start row (${startRow}) is greater than total rows (${allRows.length}) in Excel sheet.`);
                 return;
             }
-            const slicedRows = allRowsJson.slice(startRow - 1);
-
+            const slicedRows = allRows.slice(startRow - 1);
             if (slicedRows.length > 0) {
-                const newSheet = XLSX.utils.aoa_to_sheet(slicedRows.map(row => row.map(cell => String(cell === null || cell === undefined ? '' : cell))));
-                finalCsvContent = XLSX.utils.sheet_to_csv(newSheet, { strip: true, skipHidden: true });
+                finalCsvContent = slicedRows.map(row => row.map(cell => {
+                    // Remove commas and newlines from cell values to avoid breaking CSV
+                    return '"' + cell.replace(/"/g, '""').replace(/\r?\n|\r/g, ' ').replace(/,/g, '') + '"';
+                }).join(",")).join("\n");
             } else {
                 finalCsvContent = "";
             }

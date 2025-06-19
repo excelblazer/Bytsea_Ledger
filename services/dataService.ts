@@ -1,4 +1,3 @@
-
 import { v4 as uuidv4 } from 'uuid';
 import { Client, Book, Industry, UserColumnMapping, MappedTrainingTransaction, ExportedTrainingDataContainer, RuleFileContent } from '../types';
 import { INITIAL_CLIENTS, INITIAL_BOOKS, INITIAL_INDUSTRIES, STORAGE_KEYS } from '../constants';
@@ -100,14 +99,24 @@ export const addTrainingTransactions = (clientId: string, bookId: string, transa
 };
 
 
+// --- Privacy Policy Functions ---
+export const getPrivacyPolicyAccepted = (): boolean => {
+    return getItem<boolean>(STORAGE_KEYS.PRIVACY_POLICY_ACCEPTED) || false;
+};
+
+export const savePrivacyPolicyAccepted = (): void => {
+    setItem(STORAGE_KEYS.PRIVACY_POLICY_ACCEPTED, true);
+};
+
 // --- Utility for Development/Testing ---
 export const clearAllData = (): void => {
     localStorage.removeItem(STORAGE_KEYS.CLIENTS);
     localStorage.removeItem(STORAGE_KEYS.BOOKS);
     localStorage.removeItem(STORAGE_KEYS.INDUSTRIES);
-    accountingRulesService.resetAllCustomRules(); // Clear custom rules
+    localStorage.removeItem(STORAGE_KEYS.PRIVACY_POLICY_ACCEPTED);
+    
     Object.keys(localStorage).forEach(key => {
-        if (key.startsWith(STORAGE_KEYS.COLUMN_MAPPINGS_PREFIX) || key.startsWith(STORAGE_KEYS.TRAINING_DATA_PREFIX)) {
+        if (key.startsWith('bytsea_')) {
             localStorage.removeItem(key);
         }
     });

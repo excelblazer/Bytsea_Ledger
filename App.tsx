@@ -10,6 +10,7 @@ import ColumnMappingModal from './components/ColumnMappingModal';
 import ApiKeySetup from './components/ApiKeySetup'; 
 import SettingsModal from './components/SettingsModal';
 import SettingsMenu from './components/SettingsMenu';
+import PrivacyPolicyModal from './components/PrivacyPolicyModal';
 import {
     Client, Book, Industry, ProcessingJob, Transaction, JobStatus,
     EntityType, UserColumnMapping, RawTransactionData, ExportedTrainingDataContainer, RuleFileType
@@ -63,6 +64,8 @@ const App: React.FC = () => {
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [settingsView, setSettingsView] = useState<'apikey' | 'export' | 'customize' | null>(null);
   const [isSettingsMenuOpen, setIsSettingsMenuOpen] = useState(false);
+  const [isPrivacyPolicyOpen, setIsPrivacyPolicyOpen] = useState(false);
+  const [isFirstTimeUser, setIsFirstTimeUser] = useState(false);
   const settingsMenuRef = useRef<HTMLDivElement>(null);
 
   const isProcessingBlocked = currentJob?.status === JobStatus.PROCESSING ||
@@ -72,9 +75,19 @@ const App: React.FC = () => {
 
   useEffect(() => {
     loadInitialData();
+    
+    // Check if user has accepted privacy policy
+    const privacyPolicyAccepted = dataService.getPrivacyPolicyAccepted();
+    if (!privacyPolicyAccepted) {
+      // This is a first-time user or one who hasn't accepted the privacy policy
+      setIsFirstTimeUser(true);
+      setIsPrivacyPolicyOpen(true);
+    }
+    
+    // Load API key only if privacy policy is accepted or if we're just checking the key exists
     const savedApiKey = localStorage.getItem('geminiApiKey');
     if (savedApiKey) {
-      handleSaveApiKey(savedApiKey, true); 
+      handleSaveApiKey(savedApiKey); 
     } else {
       setIsApiKeyNeeded(true);
       setApiKeyLoading(false);
@@ -103,7 +116,7 @@ const App: React.FC = () => {
     });
   };
 
-  const handleSaveApiKey = async (newKey: string, isAutoInit: boolean = false) => {
+  const handleSaveApiKey = async (newKey: string) => {
     setApiKeyLoading(true);
     setApiKeyError(null);
     await new Promise(resolve => setTimeout(resolve, 500)); 
@@ -650,6 +663,11 @@ const App: React.FC = () => {
   }, [currentJob?.status]);
 
 
+  // Check if this user has accepted the privacy policy when needed
+  const privacyPolicyAccepted = dataService.getPrivacyPolicyAccepted();
+  // If we're showing the privacy policy modal to a first-time user, don't show the rest of the app
+  const blockMainContent = isFirstTimeUser && !privacyPolicyAccepted;
+  
   // File upload state for parent control
   const [pendingFile, setPendingFile] = useState<File | null>(null);
   const [fileUploadTrigger, setFileUploadTrigger] = useState(false);
@@ -659,16 +677,68 @@ const App: React.FC = () => {
       <header className="bg-surface shadow-lg">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
-            <h1 className="text-3xl font-bold">
-                <span className="bg-gradient-to-r from-primary to-secondary text-transparent bg-clip-text">
-                    {APP_TITLE}
-                </span>
-            </h1>
-            <div className="flex items-center gap-2">
+            {/* Left side - Logo and site link */}
+            <a href="https://bytsea.com" className="flex items-center gap-3" title="bytsea.com">
+              <img src="/favicon/favicon-96x96.png" alt="Bytsea Logo" className="w-8 h-8" />
+              <span className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 text-transparent bg-clip-text tracking-wide">
+                BYTSEA.COM
+              </span>
+            </a>
+            
+            {/* Right side - Navigation Icons */}
+            <div className="flex items-center space-x-3">
+              {/* Privacy Policy Icon */}
+              <button 
+                onClick={() => setIsPrivacyPolicyOpen(true)}
+                className="p-2 text-textSecondary hover:text-primary rounded-full transition-colors flex items-center"
+                title="Privacy Policy"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+              </button>
+              
+              {/* Email Icon */}
+              <a 
+                href="mailto:roshan@bytsea.com"
+                className="p-2 text-textSecondary hover:text-primary rounded-full transition-colors flex items-center"
+                title="Email: roshan@bytsea.com"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+              </a>
+              
+              {/* GitHub Icon */}
+              <a 
+                href="https://github.com/excelblazer"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2 text-textSecondary hover:text-primary rounded-full transition-colors flex items-center"
+                title="GitHub: excelblazer"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                </svg>
+              </a>
+              
+              {/* Theme Switch Icon - Placeholder */}
+              <button 
+                onClick={() => {
+                  window.alert("Theme switching feature is in the pipeline for upcoming upgrades.");
+                }}
+                className="p-2 text-textSecondary hover:text-primary rounded-full transition-colors flex items-center"
+                title="Theme Switch (Coming Soon)"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>
+              </button>
+              
               {/* Settings Button (Gear Icon) */}
               <div className="relative">
                 <button
-                  className="p-2 text-textSecondary hover:text-primary rounded-full transition-colors"
+                  className="p-2 text-textSecondary hover:text-primary rounded-full transition-colors flex items-center"
                   onClick={() => setIsSettingsMenuOpen((open) => !open)}
                   aria-label="Settings"
                 >
@@ -691,7 +761,7 @@ const App: React.FC = () => {
                 <button
                   onClick={handleResetJob}
                   title="Reset Current Job & Upload"
-                  className="p-2 text-textSecondary hover:text-primary rounded-full transition-colors disabled:opacity-50"
+                  className="p-2 text-textSecondary hover:text-primary rounded-full transition-colors flex items-center disabled:opacity-50"
                   disabled={isProcessingBlocked}
                 >
                   <ResetIcon className="w-6 h-6" />
@@ -703,7 +773,30 @@ const App: React.FC = () => {
       </header>
 
       <main className="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {isApiKeyNeeded ? (
+        {/* Main Title Section */}
+        <div className="text-center mb-10 animate-fade-in">
+          <h1 className="text-5xl font-bold mb-4">
+            <span className="bg-gradient-to-r from-primary to-secondary text-transparent bg-clip-text">
+              Bytsea Ledger Processor
+            </span>
+          </h1>
+          <p className="text-lg text-textSecondary max-w-3xl mx-auto">
+            AI-powered transaction categorization for financial statements. Streamlining bookkeeping by auto-classifying transactions into standard Chart of Accounts.
+          </p>
+        </div>
+
+        {/* Block main app content for first-time users until they accept privacy policy */}
+        {blockMainContent ? (
+          <div className="text-center p-8 bg-slate-800/50 rounded-lg border border-slate-700 shadow-lg max-w-xl mx-auto mt-6">
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-16 h-16 mx-auto text-blue-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
+            </svg>
+            <h2 className="text-xl font-semibold mb-2 text-primary">Privacy Policy Acceptance Required</h2>
+            <p className="text-slate-300 mb-6">
+              Please review and accept our Privacy Policy to continue using Bytsea Ledger Processor.
+            </p>
+          </div>
+        ) : isApiKeyNeeded ? (
           <ApiKeySetup
             onSaveKey={handleSaveApiKey}
             currentError={apiKeyError}
@@ -817,10 +910,45 @@ const App: React.FC = () => {
         )}
       </main>
 
-      <footer className="bg-surface text-textSecondary text-center py-6 mt-12 border-t border-borderNeutral">
-        <p>&copy; {new Date().getFullYear()} {APP_TITLE}. All rights reserved.</p>
-        <p className="text-xs mt-1">Modern Ledger Solutions by Bytsea</p>
+      <footer className="bg-surface text-textSecondary py-6 mt-12 border-t border-borderNeutral">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col sm:flex-row justify-between items-center space-y-2 sm:space-y-0">
+            <p className="text-sm">© 2025 Roshan. Crafted with React, TypeScript & TailwindCSS.</p>
+            <div className="flex items-center space-x-1 text-sm">
+              <span>Transforming businesses with</span>
+              <span className="text-red-500">🧠</span>
+              <span>Solutions from New Delhi</span>
+            </div>
+          </div>
+        </div>
       </footer>
+
+      {/* Privacy Policy Modal */}
+      <PrivacyPolicyModal 
+        isOpen={isPrivacyPolicyOpen}
+        onAccept={() => {
+          // Save that the user has accepted the privacy policy
+          dataService.savePrivacyPolicyAccepted();
+          setIsPrivacyPolicyOpen(false);
+          setIsFirstTimeUser(false);
+          
+          // If this was a first-time user, show a welcome message
+          if (isFirstTimeUser) {
+            // Show a welcome message
+            setGlobalError(null); // Clear any errors
+            // Load initial data again to ensure everything is set up
+            loadInitialData();
+          }
+        }}
+        onDecline={() => {
+          // Show a message explaining that the app requires privacy policy acceptance
+          setGlobalError("You must accept the Privacy Policy to use Bytsea Ledger. If you declined by mistake, please click the Privacy Policy link in the footer to try again.");
+          // Close the modal for non-first-time users, but keep it open for first-time users
+          if (!isFirstTimeUser) {
+            setIsPrivacyPolicyOpen(false);
+          }
+        }}
+      />
 
       {isAddEntityModalOpen && entityTypeToAdd && (
         <AddEntityModal

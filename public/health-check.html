@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bytsea Ledger - Health Check</title>
+    <link rel="icon" href="./favicon/favicon.ico">
+</head>
+<body>
+    <h1>Bytsea Ledger App is Running</h1>
+    <p>If you see this page, the application is successfully deployed.</p>
+    <p>You should be automatically redirected to the main application.</p>
+    <script>
+        // Check if favicon is loading properly
+        const checkFavicon = () => {
+            const link = document.querySelector('link[rel="icon"]');
+            if (link) {
+                console.log('Favicon link exists:', link.href);
+                return true;
+            } else {
+                console.log('No favicon link found');
+                return false;
+            }
+        };
+        
+        // Display favicon status
+        document.addEventListener('DOMContentLoaded', () => {
+            const faviconStatus = checkFavicon() ? 'Favicon link detected' : 'No favicon link detected';
+            const statusEl = document.createElement('p');
+            statusEl.textContent = faviconStatus;
+            document.body.appendChild(statusEl);
+            
+            // Redirect to main app after a short delay
+            setTimeout(() => {
+                window.location.href = './index.html';
+            }, 5000);
+        });
+    </script>
+</body>
+</html>

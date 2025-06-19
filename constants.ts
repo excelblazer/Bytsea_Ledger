@@ -1,4 +1,3 @@
-
 import { Client, Book, Industry, AccountingCategory, RawTransactionData, UserColumnMapping, TargetFieldConfigItem } from './types';
 
 export const APP_TITLE = "Bytsea Ledger";
@@ -36,6 +35,7 @@ export const STORAGE_KEYS = {
     CUSTOM_ACCOUNTING_RULES: 'bytsea_custom_accounting_rules',
     CUSTOM_COA_VALIDATION_RULES: 'bytsea_custom_coa_validation_rules',
     CUSTOM_COA_ALTERNATE_NAMES: 'bytsea_custom_coa_alternate_names',
+    PRIVACY_POLICY_ACCEPTED: 'bytsea_privacy_policy_accepted',
 };
 
 // For column mapping UI (Training Data) - Updated as per user request

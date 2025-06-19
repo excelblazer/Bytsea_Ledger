@@ -1,0 +1,245 @@
+/* Optimized Inter Font Loading */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hiA.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuI6fAZ9hiA.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuGKYAZ9hiA.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuFuYAZ9hiA.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+.fonts-loading {
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+}
+.fonts-loaded {
+  font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+}
+
+:root {
+  --background: #111827;
+  --surface: #1F2937;
+  --primary: #3B82F6;
+  --primary-light: #60A5FA;
+  --primary-dark: #2563EB;
+  --secondary: #6366F1;
+  --secondary-light: #818CF8;
+  --secondary-dark: #4F46E5;
+  --accent: #10B981;
+  --accent-light: #34D399;
+  --accent-dark: #059669;
+  --text-primary: #E5E7EB;
+  --text-secondary: #D1D5DB;
+  --placeholder-text: #9CA3AF;
+  --border-neutral: #374151;
+  --border-focus: #3B82F6;
+  --neutral-light: #374151;
+  --neutral: #4B5563;
+  --neutral-dark: #6B7280;
+  --radius: 0.5rem;
+  --animation-duration-fast: 0.2s;
+  --animation-duration-normal: 0.3s;
+  --animation-duration-slow: 0.5s;
+  --animation-delay-base: 0.05s;
+}
+
+body {
+  background: var(--background);
+  color: var(--text-primary);
+  font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.dark {
+  --background: #111827;
+  --surface: #1F2937;
+  --primary: #60A5FA;
+  --primary-light: #3B82F6;
+  --primary-dark: #2563EB;
+  --secondary: #818CF8;
+  --secondary-light: #6366F1;
+  --secondary-dark: #4F46E5;
+  --accent: #34D399;
+  --accent-light: #10B981;
+  --accent-dark: #059669;
+  --text-primary: #E5E7EB;
+  --text-secondary: #D1D5DB;
+  --placeholder-text: #9CA3AF;
+  --border-neutral: #374151;
+  --border-focus: #3B82F6;
+  --neutral-light: #374151;
+  --neutral: #4B5563;
+  --neutral-dark: #6B7280;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  border-color: var(--border-neutral);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-primary);
+  word-break: break-word;
+  hyphens: auto;
+  overflow-wrap: break-word;
+}
+
+input, textarea, select, button {
+  font-family: inherit;
+  color: var(--text-primary);
+  background: var(--surface);
+  border-radius: var(--radius);
+  border: 1px solid var(--border-neutral);
+  outline: none;
+  transition: border-color 0.2s;
+}
+input:focus, textarea:focus, select:focus, button:focus {
+  border-color: var(--border-focus);
+}
+
+::placeholder {
+  color: var(--placeholder-text);
+  opacity: 1;
+}
+
+button, a {
+  min-height: 44px;
+  cursor: pointer;
+}
+
+/* Utility classes */
+.bg-surface {
+  background: var(--surface);
+}
+.text-secondary {
+  color: var(--text-secondary);
+}
+.border-focus {
+  border-color: var(--border-focus) !important;
+}
+.rounded {
+  border-radius: var(--radius);
+}
+
+/* Responsive typography */
+.text-responsive {
+  font-size: clamp(1rem, 2.5vw, 1.125rem);
+  line-height: 1.5;
+}
+
+@media (max-width: 640px) {
+  :root {
+    --animation-duration-fast: 0.15s;
+    --animation-duration-normal: 0.25s;
+    --animation-duration-slow: 0.4s;
+    --animation-delay-base: 0.03s;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Hide scrollbars for scroll-area */
+.scroll-area {
+  overflow: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scroll-area::-webkit-scrollbar {
+  display: none;
+}
+
+/* Glass morphism card */
+.glass-card {
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.1);
+  box-shadow: 0 4px 32px 0 rgba(0,0,0,0.25);
+  border-radius: 1rem;
+  transition: all 0.3s;
+}
+
+.glass-card-subtle {
+  background: rgba(255,255,255,0.03);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 2px 16px 0 rgba(0,0,0,0.15);
+  border-radius: 0.75rem;
+}
+
+.glass-button {
+  background: rgba(255,255,255,0.2);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.15);
+  box-shadow: 0 2px 8px 0 rgba(0,0,0,0.1);
+  border-radius: 0.5rem;
+  padding: 0.5rem 1.25rem;
+  font-weight: 600;
+  color: #1F2937;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+.glass-button:hover {
+  background: rgba(255,255,255,0.5);
+  box-shadow: 0 4px 16px 0 rgba(0,0,0,0.12);
+}
+
+/* Animations */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+.animate-fade-in {
+  animation: fade-in var(--animation-duration-normal) ease-out forwards;
+  opacity: 0;
+}
+.animate-slide-up {
+  animation: slide-up var(--animation-duration-normal) ease-out forwards;
+  opacity: 0;
+  transform: translateY(20px);
+}
+.animate-scale-in {
+  animation: scale-in var(--animation-duration-normal) ease-out forwards;
+  opacity: 0;
+  transform: scale(0.95);
+}

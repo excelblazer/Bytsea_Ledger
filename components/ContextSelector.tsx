@@ -96,16 +96,29 @@ const ContextSelector: React.FC<ContextSelectorProps> = ({
       </div>
 
       <div className="flex items-center pt-2">
-        <input
-          id="training-data"
-          type="checkbox"
-          checked={isTrainingData}
-          onChange={(e) => setIsTrainingData(e.target.checked)}
-          className="h-4 w-4 text-primary bg-slate-700 border-borderNeutral rounded focus:ring-primary focus:ring-offset-surface disabled:opacity-50"
-          disabled={disabled}
-        />
-        <label htmlFor="training-data" className="ml-3 block text-sm text-textSecondary">
-          Designate as Training Data
+        <label className="flex items-center cursor-pointer gap-3 select-none">
+          <span className="text-sm text-textSecondary">Designate as Training Data</span>
+          <input
+            id="training-data"
+            type="checkbox"
+            checked={isTrainingData}
+            onChange={(e) => setIsTrainingData(e.target.checked)}
+            className="sr-only peer"
+            disabled={disabled}
+          />
+          <div className="w-11 h-6 rounded-full transition-colors duration-300 relative
+            bg-borderNeutral peer-checked:bg-primary
+            peer-focus:ring-2 peer-focus:ring-primary peer-focus:ring-offset-2">
+            <div className="absolute top-1 left-1 w-4 h-4 rounded-full shadow-md transition-all duration-300
+              bg-white peer-checked:bg-white
+              peer-checked:translate-x-5
+              peer-checked:shadow-lg
+              peer-checked:border-2 peer-checked:border-primary
+              border border-borderNeutral"></div>
+            {/* Animated background for ON state */}
+            <div className="absolute inset-0 rounded-full pointer-events-none transition-opacity duration-300
+              bg-primary/30 opacity-0 peer-checked:opacity-100"></div>
+          </div>
         </label>
       </div>
     </div>

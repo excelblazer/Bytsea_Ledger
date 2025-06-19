@@ -34,8 +34,7 @@ jobs:
         run: |
           rm -rf node_modules
           rm -rf ~/.npm
-          rm -f package-lock.json
-          npm cache clean --force
+          rm -f package-lock.json          npm cache clean --force
 
       - name: Install dependencies with fresh cache
         run: npm install --no-cache --prefer-online --no-audit --no-fund
@@ -71,7 +70,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-          # Remove cache to avoid corrupted cache issues      - name: Clear all caches and node_modules
+          # Remove cache to avoid corrupted cache issues
+          
+      - name: Clear all caches and node_modules
         run: |
           rm -rf node_modules
           rm -rf ~/.npm

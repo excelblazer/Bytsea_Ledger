@@ -61,7 +61,7 @@ const App: React.FC = () => {
   };
 
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
-  const [settingsView, setSettingsView] = useState<'export' | 'customize' | null>(null);
+  const [settingsView, setSettingsView] = useState<'apikey' | 'export' | 'customize' | null>(null);
   const [isSettingsMenuOpen, setIsSettingsMenuOpen] = useState(false);
   const settingsMenuRef = useRef<HTMLDivElement>(null);
 
@@ -160,6 +160,8 @@ const App: React.FC = () => {
   }, [selectedClient, selectedBook, selectedIndustry, isTrainingData, currentJob, isApiKeyNeeded]);
 
 
+  const [shouldOpenMappingModal, setShouldOpenMappingModal] = useState(false);
+
   const handleFileUploaded = (file: File, contentWithStartRowApplied: string, fileType: 'csv' | 'excel') => {
     setUploadedFile(file);
     setGlobalError(null);
@@ -212,7 +214,16 @@ const App: React.FC = () => {
         csvSampleDataForMapping: sampleRows,
     });
     setIsColumnMappingModalOpen(false);
+    setShouldOpenMappingModal(true); // <-- trigger mapping modal
   };
+
+  // Open column mapping modal automatically after file upload/offset confirm
+  useEffect(() => {
+    if (shouldOpenMappingModal && currentJob && currentJob.status === JobStatus.AWAITING_MAPPING) {
+      setIsColumnMappingModalOpen(true);
+      setShouldOpenMappingModal(false);
+    }
+  }, [shouldOpenMappingModal, currentJob]);
 
   const handleOpenMappingModal = () => {
     if (!currentJob || !currentJob.rawFileContent || !currentJob.csvHeadersForMapping || !currentJob.csvSampleDataForMapping) {
@@ -612,6 +623,36 @@ const App: React.FC = () => {
     { key: 'coaAlternateNames', label: 'CoA Alternate Names' },
   ];
 
+  // Refs for scrolling
+  const jobDetailsRef = useRef<HTMLDivElement>(null);
+  const reviewRef = useRef<HTMLDivElement>(null);
+
+  // Scroll to Job Details when processing starts
+  useEffect(() => {
+    if (
+      currentJob &&
+      (currentJob.status === JobStatus.PROCESSING || currentJob.status === JobStatus.VALIDATING || currentJob.status === JobStatus.VALIDATION_WARNING)
+    ) {
+      jobDetailsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [currentJob?.status]);
+
+  // Scroll to Review Categorisation when processing is complete
+  useEffect(() => {
+    if (
+      currentJob &&
+      (currentJob.status === JobStatus.COMPLETED || currentJob.status === JobStatus.PENDING_REVIEW) &&
+      !currentJob.isTrainingData &&
+      currentJob.transactions.length > 0
+    ) {
+      reviewRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [currentJob?.status]);
+
+
+  // File upload state for parent control
+  const [pendingFile, setPendingFile] = useState<File | null>(null);
+  const [fileUploadTrigger, setFileUploadTrigger] = useState(false);
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -623,16 +664,17 @@ const App: React.FC = () => {
                     {APP_TITLE}
                 </span>
             </h1>
-            <div className="flex items-center space-x-3 relative">
-              <button
-                onClick={() => setIsSettingsMenuOpen((v) => !v)}
-                title="Settings"
-                className="p-2 text-textSecondary hover:text-primary rounded-full transition-colors"
-              >
-                <CogIcon className="w-6 h-6" />
-              </button>
-              {isSettingsMenuOpen && (
-                <div ref={settingsMenuRef}>
+            <div className="flex items-center gap-2">
+              {/* Settings Button (Gear Icon) */}
+              <div className="relative">
+                <button
+                  className="p-2 text-textSecondary hover:text-primary rounded-full transition-colors"
+                  onClick={() => setIsSettingsMenuOpen((open) => !open)}
+                  aria-label="Settings"
+                >
+                  <CogIcon className="w-6 h-6" />
+                </button>
+                {isSettingsMenuOpen && (
                   <SettingsMenu
                     onSelect={(option) => {
                       setIsSettingsMenuOpen(false);
@@ -642,8 +684,9 @@ const App: React.FC = () => {
                       }
                     }}
                   />
-                </div>
-              )}
+                )}
+              </div>
+              {/* Reset Button (Refresh Icon) */}
               {!isApiKeyNeeded && (
                 <button
                   onClick={handleResetJob}
@@ -651,16 +694,7 @@ const App: React.FC = () => {
                   className="p-2 text-textSecondary hover:text-primary rounded-full transition-colors disabled:opacity-50"
                   disabled={isProcessingBlocked}
                 >
-                  <TrashIcon className="w-6 h-6" />
-                </button>
-              )}
-              {apiKey && !isApiKeyNeeded && (
-                <button
-                  onClick={handleClearApiKey}
-                  title="Change API Key"
-                  className="p-2 text-xs text-textSecondary hover:text-primary rounded-md border border-borderNeutral hover:border-primary transition-colors"
-                >
-                  Change API Key
+                  <ResetIcon className="w-6 h-6" />
                 </button>
               )}
             </div>
@@ -691,78 +725,94 @@ const App: React.FC = () => {
               <button onClick={() => setRuleCustomizationFeedback(null)} className="ml-4 text-lg font-bold float-right leading-none">&times;</button>
             </div>
           )}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Column 1: Controls */}
-            <div className="lg:col-span-1 space-y-8">
-              <section aria-labelledby="context-selection-heading" className="bg-surface shadow-xl rounded-xl p-6">
-                <h2 id="context-selection-heading" className="text-xl font-semibold text-textPrimary mb-4">1. Define Context & Data Type</h2>
-                <ContextSelector
-                  clients={clients} books={books} industries={industries}
-                  selectedClient={selectedClient} setSelectedClient={setSelectedClient}
-                  selectedBook={selectedBook} setSelectedBook={setSelectedBook}
-                  selectedIndustry={selectedIndustry} setSelectedIndustry={setSelectedIndustry}
-                  isTrainingData={isTrainingData} setIsTrainingData={setIsTrainingData}
-                  onAddNew={handleOpenAddEntityModal}
-                  disabled={isProcessingBlocked}
-                />
-              </section>
-              <section aria-labelledby="file-upload-heading" className="bg-surface shadow-xl rounded-xl p-6">
-                <h2 id="file-upload-heading" className="text-xl font-semibold text-textPrimary mb-4">2. Upload File</h2>
-                <FileUpload
-                  onFileUploaded={handleFileUploaded}
-                  disabled={isProcessingBlocked || !canInitiateJobFlow}
-                  resetSignal={fileUploadResetKey}
-                />
-              </section>
+          {/* Flex row for context and upload */}
+          <div className="flex flex-col lg:flex-row gap-8">
+            {/* Processing Context */}
+            <section aria-labelledby="context-selection-heading" className="bg-surface shadow-xl rounded-xl p-6 flex-1 min-w-[340px]">
+              <h2 id="context-selection-heading" className="text-xl font-semibold text-textPrimary mb-4">PROCESSING CONTEXT</h2>
+              <ContextSelector
+                clients={clients} books={books} industries={industries}
+                selectedClient={selectedClient} setSelectedClient={setSelectedClient}
+                selectedBook={selectedBook} setSelectedBook={setSelectedBook}
+                selectedIndustry={selectedIndustry} setSelectedIndustry={setSelectedIndustry}
+                isTrainingData={isTrainingData} setIsTrainingData={setIsTrainingData}
+                onAddNew={handleOpenAddEntityModal}
+                disabled={isProcessingBlocked}
+              />
+            </section>
+            {/* Upload File */}
+            <section aria-labelledby="file-upload-heading" className="bg-surface shadow-xl rounded-xl p-6 flex-1 min-w-[340px]">
+              <h2 id="file-upload-heading" className="text-xl font-semibold text-textPrimary mb-4">UPLOAD FILE</h2>
+              <FileUpload
+                onFileUploaded={handleFileUploaded}
+                disabled={isProcessingBlocked || !canInitiateJobFlow}
+                resetSignal={fileUploadResetKey}
+                onFileSelected={setPendingFile}
+                triggerUpload={fileUploadTrigger}
+              />
               <button
-                  onClick={handleOpenMappingModal}
-                  disabled={!uploadedFile || !canInitiateJobFlow || currentJob?.status !== JobStatus.AWAITING_MAPPING || isProcessingBlocked }
-                  className="w-full bg-primary hover:bg-primary-dark text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-150 ease-in-out disabled:bg-neutral-dark disabled:text-textSecondary disabled:cursor-not-allowed flex items-center justify-center space-x-2 text-base"
-                >
-                  { currentJob?.status === JobStatus.VALIDATING ? <LoadingSpinner size="sm" color="text-white" /> :
-                    currentJob?.status === JobStatus.PROCESSING ? <LoadingSpinner size="sm" color="text-white" /> :
-                    <CogIcon className="w-5 h-5"/>
-                  }
-                  <span>{getActionButtonText()}</span>
+                onClick={() => setFileUploadTrigger(v => !v)}
+                disabled={!pendingFile || isProcessingBlocked || !canInitiateJobFlow}
+                className="w-full bg-secondary hover:bg-secondary-dark text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-150 ease-in-out disabled:bg-neutral-dark disabled:text-textSecondary disabled:cursor-not-allowed flex items-center justify-center space-x-2 text-base mt-6"
+              >
+                <UploadIcon className="w-5 h-5" />
+                <span>Upload File</span>
               </button>
-               {globalError && (
-                  <div className="mt-4 p-4 bg-red-700 bg-opacity-30 border border-red-500 rounded-lg text-sm text-red-100">
-                      {globalError}
-                      <button onClick={() => setGlobalError(null)} className="ml-4 text-lg font-bold float-right leading-none">&times;</button>
-                  </div>
+              {globalError && (
+                <div className="mt-4 p-4 bg-red-700 bg-opacity-30 border border-red-500 rounded-lg text-sm text-red-100">
+                  {globalError}
+                  <button onClick={() => setGlobalError(null)} className="ml-4 text-lg font-bold float-right leading-none">&times;</button>
+                </div>
               )}
-            </div>
-            {/* Column 2: Job Status & Results */}
-            <div className="lg:col-span-2 space-y-8">
-              <section aria-labelledby="job-status-heading" className="bg-surface shadow-xl rounded-xl p-6">
-                  <h2 id="job-status-heading" className="text-xl font-semibold text-textPrimary mb-4">3. Job Status</h2>
-                  <JobProgress
-                      job={currentJob}
-                      onConfirmProceed={!currentJob?.isTrainingData ? handleConfirmProceedWithSkippedRows : undefined}
-                      onCancel={handleResetJob}
-                  />
-              </section>
-              {currentJob && (currentJob.status === JobStatus.COMPLETED || currentJob.status === JobStatus.PENDING_REVIEW || (currentJob.status === JobStatus.VALIDATION_WARNING && !currentJob.isTrainingData) ) && !currentJob.isTrainingData && currentJob.transactions.length > 0 && (
-                <section aria-labelledby="transaction-review-heading" className="bg-surface shadow-xl rounded-xl p-0 sm:p-2 md:p-6 overflow-hidden">
-                  <h2 id="transaction-review-heading" className="text-xl font-semibold text-textPrimary mb-4 px-6 pt-6 sm:px-4 sm:pt-4 md:px-0 md:pt-0">4. Review Transactions</h2>
-                  <TransactionTable
-                      transactions={currentJob.transactions}
-                      onUpdateTransaction={handleUpdateTransaction}
-                      isLoading={false}
-                      jobFileName={currentJob.fileName}
-                  />
-                </section>
-              )}
-              {currentJob && currentJob.status === JobStatus.COMPLETED && currentJob.isTrainingData && (
-                   <div className={`mt-4 p-4 rounded-lg text-sm ${currentJob.validationReport && (currentJob.validationReport.skippedRowCount > 0 || currentJob.validationReport.warningRowCount > 0) ? 'bg-yellow-700 bg-opacity-30 border-yellow-500 text-yellow-100' : 'bg-green-700 bg-opacity-30 border-green-500 text-green-100'}`}>
-                      Training data processing complete. {currentJob.processedRows} of {currentJob.totalRows} initial data rows saved as training.
-                      {currentJob.validationReport && (currentJob.validationReport.skippedRowCount > 0 || currentJob.validationReport.warningRowCount > 0) &&
-                          ` ${currentJob.validationReport.skippedRowCount > 0 ? `${currentJob.validationReport.skippedRowCount} rows were skipped. ` : ''}${currentJob.validationReport.warningRowCount > 0 ? `${currentJob.validationReport.warningRowCount} rows had warnings. ` : ''}`
-                      }
-                  </div>
-              )}
-            </div>
+            </section>
           </div>
+
+          {/* Job Details: only show after mapping and when processing starts */}
+          {currentJob &&
+            (currentJob.status === JobStatus.PROCESSING ||
+              currentJob.status === JobStatus.VALIDATING ||
+              currentJob.status === JobStatus.VALIDATION_WARNING ||
+              currentJob.status === JobStatus.COMPLETED ||
+              currentJob.status === JobStatus.PENDING_REVIEW) && (
+            <div ref={jobDetailsRef} className="mt-10">
+              <section aria-labelledby="job-status-heading" className="bg-surface shadow-xl rounded-xl p-6">
+                <h2 id="job-status-heading" className="text-xl font-semibold text-textPrimary mb-4">JOB DETAILS</h2>
+                <JobProgress
+                  job={currentJob}
+                  onConfirmProceed={!currentJob?.isTrainingData ? handleConfirmProceedWithSkippedRows : undefined}
+                  onCancel={handleResetJob}
+                />
+              </section>
+            </div>
+          )}
+
+          {/* Review Categorisation: only show after processing is complete */}
+          {currentJob &&
+            (currentJob.status === JobStatus.COMPLETED || currentJob.status === JobStatus.PENDING_REVIEW) &&
+            !currentJob.isTrainingData &&
+            currentJob.transactions.length > 0 && (
+            <div ref={reviewRef} className="mt-10">
+              <section aria-labelledby="transaction-review-heading" className="bg-surface shadow-xl rounded-xl p-0 sm:p-2 md:p-6 overflow-hidden">
+                <h2 id="transaction-review-heading" className="text-xl font-semibold text-textPrimary mb-4 px-6 pt-6 sm:px-4 sm:pt-4 md:px-0 md:pt-0">REVIEW CATEGORISATION</h2>
+                <TransactionTable
+                  transactions={currentJob.transactions}
+                  onUpdateTransaction={handleUpdateTransaction}
+                  isLoading={false}
+                  jobFileName={currentJob.fileName}
+                />
+              </section>
+            </div>
+          )}
+
+          {/* Training data completion message (unchanged) */}
+          {currentJob && currentJob.status === JobStatus.COMPLETED && currentJob.isTrainingData && (
+            <div className={`mt-4 p-4 rounded-lg text-sm ${currentJob.validationReport && (currentJob.validationReport.skippedRowCount > 0 || currentJob.validationReport.warningRowCount > 0) ? 'bg-yellow-700 bg-opacity-30 border-yellow-500 text-yellow-100' : 'bg-green-700 bg-opacity-30 border-green-500 text-green-100'}`}>
+              Training data processing completed. {currentJob.processedRows} of {currentJob.totalRows} initial data rows saved as training.
+              {currentJob.validationReport && (currentJob.validationReport.skippedRowCount > 0 || currentJob.validationReport.warningRowCount > 0) &&
+                ` ${currentJob.validationReport.skippedRowCount > 0 ? `${currentJob.validationReport.skippedRowCount} rows were skipped. ` : ''}${currentJob.validationReport.warningRowCount > 0 ? `${currentJob.validationReport.warningRowCount} rows had warnings. ` : ''}`
+              }
+            </div>
+          )}
           </>
         )}
       </main>
@@ -798,6 +848,15 @@ const App: React.FC = () => {
         />
       )}
       <SettingsModal isOpen={isSettingsModalOpen} onClose={() => setIsSettingsModalOpen(false)}>
+              {settingsView === 'apikey' && (
+                <ApiKeySetup
+                  onSaveKey={handleSaveApiKey}
+                  onClearKey={handleClearApiKey}
+                  currentError={apiKeyError}
+                  hasExistingKey={!!apiKey}
+                  isLoading={apiKeyLoading}
+                />
+              )}
               {settingsView === 'export' && (
                 <section>
                   <h2 className="text-xl font-semibold mb-4">Export Training Data & Rules</h2>

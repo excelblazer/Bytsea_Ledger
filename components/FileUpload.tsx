@@ -6,25 +6,38 @@ interface FileUploadProps {
   onFileUploaded: (file: File, fileContent: string, fileType: 'csv' | 'excel') => void;
   disabled?: boolean;
   resetSignal?: number; // To trigger internal reset
+  onFileSelected?: (file: File | null) => void; // Notify parent of file selection
+  triggerUpload?: boolean; // Parent triggers upload
 }
 
 const MAX_PREVIEW_ROWS = 20;
 
-const FileUpload: React.FC<FileUploadProps> = ({ onFileUploaded, disabled, resetSignal }) => {
+const FileUpload: React.FC<FileUploadProps> = ({ onFileUploaded, disabled, resetSignal, onFileSelected, triggerUpload }) => {
   const [selectedRawFile, setSelectedRawFile] = useState<File | null>(null);
   const [rawFileContentForProcessing, setRawFileContentForProcessing] = useState<string | ArrayBuffer | null>(null);
   const [rawFileType, setRawFileType] = useState<'csv' | 'excel' | null>(null);
-  
   const [error, setError] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
-
   const [rawRowsPreview, setRawRowsPreview] = useState<string[][]>([]);
   const [headerRowNumberInput, setHeaderRowNumberInput] = useState<string>("1");
   const [isStartRowConfirmed, setIsStartRowConfirmed] = useState<boolean>(false);
   const [confirmedFileName, setConfirmedFileName] = useState<string | null>(null);
   const [confirmedFileSize, setConfirmedFileSize] = useState<number | null>(null);
-
+  const [isUploadClicked, setIsUploadClicked] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Notify parent when file is selected
+  useEffect(() => {
+    if (onFileSelected) onFileSelected(selectedRawFile);
+  }, [selectedRawFile, onFileSelected]);
+
+  // Parent triggers upload
+  useEffect(() => {
+    if (triggerUpload && selectedRawFile && !isStartRowConfirmed) {
+      parseFileForPreviewAndStore(selectedRawFile);
+      setIsUploadClicked(true);
+    }
+  }, [triggerUpload]);
 
   const resetInternalState = useCallback(() => {
     setSelectedRawFile(null);
@@ -36,8 +49,9 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFileUploaded, disabled, reset
     setIsStartRowConfirmed(false);
     setConfirmedFileName(null);
     setConfirmedFileSize(null);
+    setIsUploadClicked(false);
     if (fileInputRef.current) {
-      fileInputRef.current.value = ''; // Reset file input
+      fileInputRef.current.value = '';
     }
   }, []);
 
@@ -47,9 +61,8 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFileUploaded, disabled, reset
     }
   }, [resetSignal, resetInternalState]);
 
-
   const parseFileForPreviewAndStore = (file: File) => {
-    resetInternalState(); 
+    resetInternalState();
     setError(null);
     setSelectedRawFile(file);
 
@@ -96,8 +109,10 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFileUploaded, disabled, reset
             const worksheet = workbook.worksheets[0];
             const jsonData: string[][] = [];
             worksheet.eachRow({ includeEmpty: true }, (row, rowNumber) => {
+              // Ensure row.values is an array
+              const valuesArr = Array.isArray(row.values) ? row.values : [];
               if (rowNumber <= MAX_PREVIEW_ROWS) {
-                jsonData.push(row.values.slice(1).map(cell => cell === null || cell === undefined ? '' : String(cell)));
+                jsonData.push(valuesArr.slice(1).map((cell: any) => cell === null || cell === undefined ? '' : String(cell)));
               }
             });
             setRawRowsPreview(jsonData);
@@ -131,9 +146,26 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFileUploaded, disabled, reset
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      parseFileForPreviewAndStore(file);
+      setSelectedRawFile(file);
+      setIsUploadClicked(false);
+    } else {
+      setSelectedRawFile(null);
+      setIsUploadClicked(false);
     }
   };
+
+  // Notify parent when file is selected
+  useEffect(() => {
+    if (onFileSelected) onFileSelected(selectedRawFile);
+  }, [selectedRawFile, onFileSelected]);
+
+  // Parent triggers upload
+  useEffect(() => {
+    if (triggerUpload && selectedRawFile && !isStartRowConfirmed) {
+      parseFileForPreviewAndStore(selectedRawFile);
+      setIsUploadClicked(true);
+    }
+  }, [triggerUpload]);
 
   const handleDrop = useCallback((event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
@@ -232,8 +264,28 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFileUploaded, disabled, reset
 
   const acceptedFileTypes = ['.csv', '.xls', '.xlsx'].join(',');
 
+  // Modal for offset confirmation (copied from SettingsModal)
+  const OffsetModal: React.FC<{ isOpen: boolean; onClose: () => void; children: React.ReactNode }> = ({ isOpen, onClose, children }) => {
+    if (!isOpen) return null;
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+        <div className="bg-surface rounded-xl shadow-2xl p-6 w-full max-w-2xl relative">
+          <button
+            className="absolute top-3 right-3 text-2xl text-textSecondary hover:text-primary"
+            onClick={onClose}
+            aria-label="Close offset modal"
+          >
+            &times;
+          </button>
+          {children}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className={`p-6 border-2 ${isDragging ? 'border-primary' : 'border-dashed border-borderNeutral'} rounded-lg transition-colors duration-200 ease-in-out ${disabled ? 'bg-slate-700 opacity-60 cursor-not-allowed' : 'bg-surface'}`}>
+      {/* File select/upload UI */}
       {!isStartRowConfirmed && (
         <div
           className="flex flex-col items-center justify-center space-y-4 py-6"
@@ -253,48 +305,58 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFileUploaded, disabled, reset
         </div>
       )}
 
-      {selectedRawFile && !isStartRowConfirmed && rawRowsPreview.length > 0 && (
-        <div className="mt-4 space-y-4">
-          <p className="text-sm font-medium text-textPrimary">File: <span className="font-normal text-textSecondary">{selectedRawFile.name}</span></p>
-          <div>
-            <label htmlFor="header-row-number" className="block text-sm font-medium text-textSecondary">
-              Actual Header Row Number in File:
-            </label>
-            <input
-              type="number"
-              id="header-row-number"
-              value={headerRowNumberInput}
-              onChange={(e) => setHeaderRowNumberInput(e.target.value)}
-              min="1"
-              className="mt-1 block w-full sm:w-1/2 md:w-1/3 px-3 py-2 bg-slate-700 border border-borderNeutral rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary text-textPrimary sm:text-sm placeholder-placeholderText"
-            />
-             <p className="text-xs text-textSecondary opacity-70 mt-1">Enter the row number where your actual data table headers begin (e.g., if headers are on the 5th row of your Excel, enter 5).</p>
+      {/* Offset Modal for header row and preview: only show after upload button is clicked */}
+      <OffsetModal isOpen={!!selectedRawFile && isUploadClicked && !isStartRowConfirmed && rawRowsPreview.length > 0} onClose={resetInternalState}>
+        {selectedRawFile && isUploadClicked && !isStartRowConfirmed && rawRowsPreview.length > 0 && (
+          <div className="space-y-4">
+            <p className="text-sm font-medium text-textPrimary">File: <span className="font-normal text-textSecondary">{selectedRawFile.name}</span></p>
+            <div>
+              <label htmlFor="header-row-number" className="block text-sm font-medium text-textSecondary">
+                Actual Header Row Number in File:
+              </label>
+              <input
+                type="number"
+                id="header-row-number"
+                value={headerRowNumberInput}
+                onChange={(e) => setHeaderRowNumberInput(e.target.value)}
+                min="1"
+                className="mt-1 block w-full sm:w-1/2 md:w-1/3 px-3 py-2 bg-slate-700 border border-borderNeutral rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary text-textPrimary sm:text-sm placeholder-placeholderText"
+              />
+              <p className="text-xs text-textSecondary opacity-70 mt-1">Enter the row number where your actual data table headers begin (e.g., if headers are on the 5th row of your Excel, enter 5).</p>
+            </div>
+            <h4 className="text-sm font-semibold text-textPrimary">Raw File Preview (first {MAX_PREVIEW_ROWS} rows):</h4>
+            <div className="overflow-x-auto border border-borderNeutral rounded-md max-h-60 bg-slate-900 text-xs shadow-inner">
+              <table className="min-w-full">
+                <tbody className="divide-y divide-borderNeutral">
+                  {rawRowsPreview.map((row, rowIndex) => (
+                    <tr key={rowIndex} className={`${rowIndex + 1 === parseInt(headerRowNumberInput,10) ? 'bg-primary bg-opacity-20' : ''} hover:bg-slate-700 transition-colors`}>
+                      <td className="px-3 py-2 text-slate-500 w-12 text-right">{rowIndex + 1}</td>
+                      {row.map((cell, cellIndex) => (
+                        <td key={cellIndex} className="px-3 py-2 border-l border-borderNeutral whitespace-nowrap truncate max-w-[150px] text-textSecondary" title={cell}>{cell}</td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <button
+              onClick={handleConfirmStartRow}
+              className="w-full sm:w-auto px-6 py-2.5 bg-secondary hover:bg-secondary-dark text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-colors duration-150 ease-in-out"
+              disabled={disabled}
+            >
+              Apply Start Row & Continue
+            </button>
+            {error && (
+              <div className="mt-2 p-3 bg-red-800 bg-opacity-30 border border-red-600 rounded-lg text-sm text-red-200 flex items-center">
+                <XCircleIcon className="w-5 h-5 mr-2 text-red-400" />
+                {error}
+              </div>
+            )}
           </div>
-          <h4 className="text-sm font-semibold text-textPrimary">Raw File Preview (first {MAX_PREVIEW_ROWS} rows):</h4>
-          <div className="overflow-x-auto border border-borderNeutral rounded-md max-h-60 bg-slate-900 text-xs shadow-inner">
-            <table className="min-w-full">
-              <tbody className="divide-y divide-borderNeutral">
-                {rawRowsPreview.map((row, rowIndex) => (
-                  <tr key={rowIndex} className={`${rowIndex + 1 === parseInt(headerRowNumberInput,10) ? 'bg-primary bg-opacity-20' : ''} hover:bg-slate-700 transition-colors`}>
-                    <td className="px-3 py-2 text-slate-500 w-12 text-right">{rowIndex + 1}</td>
-                    {row.map((cell, cellIndex) => (
-                      <td key={cellIndex} className="px-3 py-2 border-l border-borderNeutral whitespace-nowrap truncate max-w-[150px] text-textSecondary" title={cell}>{cell}</td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <button
-            onClick={handleConfirmStartRow}
-            className="w-full sm:w-auto px-6 py-2.5 bg-secondary hover:bg-secondary-dark text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-colors duration-150 ease-in-out"
-            disabled={disabled}
-          >
-            Apply Start Row & Continue
-          </button>
-        </div>
-      )}
+        )}
+      </OffsetModal>
 
+      {/* File ready state */}
       {isStartRowConfirmed && confirmedFileName && (
         <div className="mt-3 p-4 bg-green-800 bg-opacity-30 border border-green-600 rounded-lg text-sm text-green-200 flex items-center justify-between">
             <div className="flex items-center">
@@ -312,13 +374,6 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFileUploaded, disabled, reset
             >
                 Change file
             </button>
-        </div>
-      )}
-      
-      {error && (
-        <div className="mt-4 p-3 bg-red-800 bg-opacity-30 border border-red-600 rounded-lg text-sm text-red-200 flex items-center">
-          <XCircleIcon className="w-5 h-5 mr-2 text-red-400" />
-          {error}
         </div>
       )}
     </div>

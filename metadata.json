@@ -1,0 +1,5 @@
+{
+  "name": "Bytsea Ledger",
+  "description": "An automated transaction categorization system using AI to classify bank and credit card transactions into standard accounting categories.",
+  "requestFramePermissions": []
+}

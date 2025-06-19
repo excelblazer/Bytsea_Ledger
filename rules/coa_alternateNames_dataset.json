@@ -1,0 +1,1469 @@
+{
+  "chart_of_accounts_validation": {
+    "version": "2.0",
+    "description": "Comprehensive validation dataset for Chart of Accounts ledger classification with extensive alternate names and aliases",
+    "categories": {
+      "assets": {
+        "primary_name": "Assets",
+        "alternative_names": [
+          "Asset",
+          "Assets Accounts",
+          "Asset Side",
+          "What We Own",
+          "Company Holdings",
+          "Resources",
+          "Balance Sheet Assets",
+          "Financial Assets",
+          "Total Assets",
+          "Asset Ledger"
+        ],
+        "abbreviations": ["A", "Asst", "AST"],
+        "typos": ["Assests", "Asets", "Asetts", "Assett"],
+        "subcategories": {
+          "current_assets": {
+            "primary_name": "Current Assets",
+            "alternative_names": [
+              "Short Term Assets",
+              "Short-Term Assets",
+              "Liquid Assets",
+              "Current Asset Accounts",
+              "Cash & Current Assets",
+              "Current Asset Holdings",
+              "Cur Assets",
+              "Current A/C",
+              "Operating Assets",
+              "Quick Assets",
+              "Current Assets Total"
+            ],
+            "abbreviations": ["CA", "Cur Assets", "Current A/C", "C.A."],
+            "typos": ["Curent Assets", "Current Assests", "Curnt Assets", "Current Asets"],
+            "accounts": {
+              "bank_accounts": {
+                "primary_name": "Bank Account",
+                "alternative_names": [
+                  "Cash at Bank",
+                  "Bank Cash",
+                  "Checking Account",
+                  "Current Account",
+                  "Savings Account",
+                  "Deposit Account",
+                  "Operating Account",
+                  "Business Bank Account",
+                  "Petty Cash",
+                  "Cash & Equivalents",
+                  "Bank Account HDFC",
+                  "Bank Account ICICI",
+                  "Bank Account 1234",
+                  "Cash on Hand",
+                  "Bank Balances",
+                  "Funds in Bank",
+                  "Bank A/C",
+                  "Bank A/cs",
+                  "Bank Acc",
+                  "Acct #1",
+                  "Account #1",
+                  "Bank 1",
+                  "Cash Bank",
+                  "Main Bank",
+                  "Payroll Bank Account",
+                  "Investment Bank Account"
+                ],
+                "abbreviations": ["Bank A/C", "Bank A/cs", "Bank Acc", "B.A."],
+                "typos": ["Bank Acocunt", "Bnka Account", "Bnk Account", "Acct #"],
+                "notes": "Includes 'Bank Account #1', 'Bank Account #2', and generic 'Bank Account'"
+              },
+              "accounts_receivable": {
+                "primary_name": "Accounts Receivable",
+                "alternative_names": [
+                  "A/R",
+                  "AR",
+                  "Trade Receivables",
+                  "Customer Receivables",
+                  "Debtors",
+                  "Sundry Debtors",
+                  "Customers Owing",
+                  "Money Owed by Customers",
+                  "Receivables",
+                  "Account Receivable",
+                  "AR Control",
+                  "Receivable Accounts",
+                  "Client Debt",
+                  "AR Ledger"
+                ],
+                "abbreviations": ["A/R", "AR", "Rec", "Acc Rec"],
+                "typos": ["Acounts Receivable", "Accunts Receivable", "Account Recievables", "AR"],
+                "notes": "Account Receivable is singular form"
+              },
+              "other_current_assets": {
+                "primary_name": "Other Current Assets",
+                "alternative_names": [
+                  "Misc Current Assets",
+                  "Miscellaneous Current Assets",
+                  "Other Short Term Assets",
+                  "Other Liquid Assets",
+                  "Prepaid Expenses and Other Current Assets",
+                  "Sundry Current Assets",
+                  "Current Assets (Other)",
+                  "OCA"
+                ],
+                "abbreviations": ["OCA", "Misc CA", "Other CA"],
+                "typos": ["Oher Current Assets", "Miscellanous Current Assets"],
+                "notes": "Often includes prepaid expenses"
+              },
+              "security_deposit": {
+                "primary_name": "Security Deposit",
+                "alternative_names": [
+                  "Deposits Paid",
+                  "Rent Deposit",
+                  "Utility Deposit",
+                  "Lease Deposit",
+                  "Earnest Money Deposit",
+                  "Deposits Receivable",
+                  "Security Deposits Held",
+                  "Deposits",
+                  "Deposit (Security)"
+                ],
+                "abbreviations": ["SD", "Sec Dep"],
+                "typos": ["Securty Deposit", "Deposti"],
+                "notes": "Refers to deposits paid by the company"
+              }
+            }
+          },
+          "fixed_assets": {
+            "primary_name": "Fixed Assets",
+            "alternative_names": [
+              "Property, Plant, and Equipment",
+              "PP&E",
+              "Property Plant & Equipment",
+              "Tangible Assets",
+              "Long-Term Assets",
+              "Capital Assets",
+              "Non-Current Assets",
+              "Plant & Equipment",
+              "Fixed Assets (Net)",
+              "Fixed Asset Base",
+              "Fixed Asset Accounts",
+              "FA"
+            ],
+            "abbreviations": ["FA", "PP&E", "PPE", "NCA"],
+            "typos": ["Fxed Assets", "Fixed Assests", "Fiexed Assets"],
+            "notes": "Long-Term Assets and Non-Current Assets are broader categories but often used interchangeably"
+          },
+          "fixed_asset_accounts": {
+            "primary_name": "Fixed Asset Accounts",
+            "subcategories": {
+              "accumulated_depreciation": {
+                "primary_name": "Accumulated Depreciation",
+                "alternative_names": [
+                  "Acc. Depreciation",
+                  "Accumulated Deprecation",
+                  "Accumulated Dep.",
+                  "Depreciation Accumulated",
+                  "Contra-Asset - Depreciation",
+                  "Allowance for Depreciation",
+                  "Total Depreciation",
+                  "AD",
+                  "Acc Dep",
+                  "Depreciation Reserve"
+                ],
+                "abbreviations": ["AD", "Acc Dep", "Acc. Dep."],
+                "typos": ["Accumulated Deprecation", "Accuulated Depreciation", "Depriciation"],
+                "notes": "A contra-asset account"
+              },
+              "dental_equipment": {
+                "primary_name": "Dental Equipment",
+                "alternative_names": [
+                  "Dental Instruments",
+                  "Clinic Equipment",
+                  "Medical Equipment",
+                  "X-Ray Machine",
+                  "Dental Chairs",
+                  "Equipment - Dental",
+                  "Dentistry Equipment",
+                  "Specialized Equipment",
+                  "Machinery - Dental",
+                  "Dental Tools",
+                  "Drill (Dental)"
+                ],
+                "abbreviations": ["Dental Equip", "Clinic Equip"],
+                "typos": ["Dental Equipmint", "Dnetal Equipment"]
+              },
+              "furniture": {
+                "primary_name": "Furniture",
+                "alternative_names": [
+                  "Office Furniture",
+                  "Fixtures & Furniture",
+                  "F&F",
+                  "Desks and Chairs",
+                  "Furnishings",
+                  "Furniture & Fixtures",
+                  "Shop Furniture",
+                  "Clinic Furniture",
+                  "Tables and Chairs"
+                ],
+                "abbreviations": ["F&F", "Furn"],
+                "typos": ["Furnitur", "Furntiure"]
+              },
+              "office_equipment": {
+                "primary_name": "Office Equipment",
+                "alternative_names": [
+                  "Computer Equipment",
+                  "Computers",
+                  "Printers",
+                  "Scanners",
+                  "IT Equipment",
+                  "Office Machines",
+                  "Laptops & Desktops",
+                  "Networking Equipment",
+                  "Telecommunication Equipment",
+                  "Copiers",
+                  "Fax Machines"
+                ],
+                "abbreviations": ["OE", "IT Equip", "Comp Equip"],
+                "typos": ["Office Equipmint", "Offce Equipment"]
+              },
+              "leasehold_improvement": {
+                "primary_name": "Leasehold Improvement",
+                "alternative_names": [
+                  "Leasehold Improvements",
+                  "Tenant Improvements",
+                  "Building Improvements (on leased property)",
+                  "Property Improvements - Leased",
+                  "Leased Property Improvements",
+                  "Improvements to Leased Premises",
+                  "Capitalized Leasehold Improvements",
+                  "Renovations (Leased)"
+                ],
+                "abbreviations": ["LHI", "TI"],
+                "typos": ["Leasehold Improvment", "Leasehold Improvemnt"]
+              }
+            }
+          },
+          "other_assets": {
+            "primary_name": "Other Asset",
+            "alternative_names": [
+              "Other Non-Current Assets",
+              "Miscellaneous Assets",
+              "Non-Current Assets (Generic)",
+              "Long-Term Investments",
+              "Intangible Assets",
+              "Other Long Term Assets",
+              "Sundry Assets",
+              "Long Term Other Assets",
+              "Non-Operational Assets"
+            ],
+            "abbreviations": ["OA", "Misc Assets", "Other NCA"],
+            "typos": ["Oter Asset", "Other Assests"],
+            "notes": "Can include intangible assets if grouped here"
+          },
+          "other_asset_accounts": {
+            "primary_name": "Other Asset Accounts",
+            "subcategories": {
+              "accumulated_amortization": {
+                "primary_name": "Accumulated Amortization",
+                "alternative_names": [
+                  "Acc. Amortization",
+                  "Accumulated Amort.",
+                  "Amortization Accumulated",
+                  "Contra-Asset - Amortization",
+                  "Allowance for Amortization",
+                  "Total Amortization",
+                  "AA",
+                  "Acc Amort",
+                  "Amortization Reserve"
+                ],
+                "abbreviations": ["AA", "Acc Amort", "Acc. Amort."],
+                "typos": ["Accumulated Amortizaton", "Accuulated Amortization"],
+                "notes": "A contra-asset account for intangible assets"
+              },
+              "goodwill": {
+                "primary_name": "Goodwill",
+                "alternative_names": [
+                  "Acquired Goodwill",
+                  "Business Goodwill",
+                  "Goodwill (Net)",
+                  "Purchased Goodwill",
+                  "Organizational Goodwill",
+                  "Brand Value"
+                ],
+                "abbreviations": ["GW"],
+                "typos": ["Goodwil", "Godwill"]
+              },
+              "covenant": {
+                "primary_name": "Covenant",
+                "alternative_names": [
+                  "Non-Compete Agreement",
+                  "Licensing Agreement",
+                  "Intangible Asset - Covenant",
+                  "Restrictive Covenant",
+                  "Contractual Right",
+                  "Agreement Right",
+                  "Non-Compete Covenant"
+                ],
+                "abbreviations": ["NCA", "Cvt"],
+                "typos": ["Covenent", "Covenat"]
+              }
+            }
+          }
+        }
+      },
+      "liabilities_and_equity": {
+        "primary_name": "Liabilities And Equity",
+        "alternative_names": [
+          "Liabilities & Equity",
+          "Debts and Equity",
+          "Funding Sources",
+          "Capital Structure",
+          "L&E",
+          "Total Liabilities and Equity",
+          "Liabilities plus Equity"
+        ],
+        "abbreviations": ["L&E", "L+E", "L/E"],
+        "typos": ["Liabilites and Equity", "Liabilities and Equiy"],
+        "subcategories": {
+          "liabilities": {
+            "primary_name": "Liabilities",
+            "alternative_names": [
+              "Debt",
+              "Obligations",
+              "Debts Payable",
+              "Financial Obligations",
+              "Company Debt",
+              "Payables",
+              "Liabilities Total"
+            ],
+            "abbreviations": ["L", "Liab"],
+            "typos": ["Liabilites", "Liablities", "Liabities"],
+            "subcategories": {
+              "current_liabilities": {
+                "primary_name": "Current Liabilities",
+                "alternative_names": [
+                  "Short-Term Liabilities",
+                  "Current Obligations",
+                  "Current Debts",
+                  "Short-Term Debts",
+                  "Current Liabilities Accounts",
+                  "CL",
+                  "Cur Liabilities",
+                  "Current A/C (Liabilities)",
+                  "Accounts Payable & Other Current Liabilities"
+                ],
+                "abbreviations": ["CL", "Cur Liab", "Current A/C"],
+                "typos": ["Curent Liabilities", "Current Liablities"],
+                "notes": "Includes Accounts Payable by default, though not explicitly listed as a separate account"
+              },
+              "current_liability_accounts": {
+                "primary_name": "Current Liability Accounts",
+                "subcategories": {
+                  "other_current_liabilities": {
+                    "primary_name": "Other Current Liabilities",
+                    "alternative_names": [
+                      "Misc Current Liabilities",
+                      "Miscellaneous Current Liabilities",
+                      "Sundry Current Liabilities",
+                      "Accrued Expenses & Other Current Liabilities",
+                      "Current Liabilities (Other)",
+                      "Other Short Term Liabilities",
+                      "Unearned Revenue",
+                      "Accruals"
+                    ],
+                    "abbreviations": ["OCL", "Misc CL", "Other CL"],
+                    "typos": ["Oher Current Liabilities", "Miscellanous Current Liabilities"],
+                    "notes": "Often includes unearned revenue and accrued expenses"
+                  },
+                  "payroll_liabilities": {
+                    "primary_name": "Payroll Liabilities",
+                    "alternative_names": [
+                      "Payroll Taxes Payable",
+                      "Wages Payable",
+                      "Salaries Payable",
+                      "Employee Withholdings",
+                      "Accrued Payroll",
+                      "Payroll Accruals",
+                      "Social Security Payable",
+                      "Provident Fund Payable",
+                      "ESI Payable",
+                      "TDS Payable",
+                      "Professional Tax Payable",
+                      "Statutory Deductions"
+                    ],
+                    "abbreviations": ["PL", "Payroll Liab"],
+                    "typos": ["Payrol Liabilities", "Payroll Liabilties"],
+                    "notes": "Specific to employee-related obligations, includes Indian specific terms"
+                  },
+                  "pension_payabl": {
+                    "primary_name": "Pension Payable",
+                    "alternative_names": [
+                      "Pension Obligation",
+                      "Retirement Benefit Payable",
+                      "Accrued Pension",
+                      "Post-Retirement Benefit Obligation",
+                      "Pension Fund Payable",
+                      "Pension Liabilities",
+                      "401K Payable"
+                    ],
+                    "abbreviations": ["PP"],
+                    "typos": ["Pention Payable", "Pesnion Payable"]
+                  }
+                }
+              },
+              "long_term_liabilities": {
+                "primary_name": "Long-Term Liabilities",
+                "alternative_names": [
+                  "Non-Current Liabilities",
+                  "Long-Term Debt",
+                  "Non-Current Debt",
+                  "LT Liabilities",
+                  "Long Term Loans",
+                  "Bonds Payable",
+                  "Mortgage Payable",
+                  "Deferred Tax Liabilities",
+                  "Long-Term Obligations",
+                  "Long Term Debt Total"
+                ],
+                "abbreviations": ["LTL", "LT Debt", "NCL"],
+                "typos": ["Long Term Liabilites", "Long-Term Liablities", "Logn-Term Liabilities"]
+              }
+            }
+          },
+          "equity": {
+            "primary_name": "Equity",
+            "alternative_names": [
+              "Owner's Equity",
+              "Stockholder's Equity",
+              "Capital",
+              "Net Worth",
+              "Shareholders Equity",
+              "Owners Equity",
+              "Total Equity",
+              "Contributed Capital"
+            ],
+            "abbreviations": ["E", "OE", "SE"],
+            "typos": ["Equit", "Equty", "Equtiy"],
+            "subcategories": {
+              "additional_paid_in_capital": {
+                "primary_name": "Additional Paid in Capital",
+                "alternative_names": [
+                  "APIC",
+                  "Paid-in Capital in Excess of Par",
+                  "Capital Surplus",
+                  "Share Premium",
+                  "Contributed Capital in Excess of Par",
+                  "Additional Capital Contributed"
+                ],
+                "abbreviations": ["APIC", "PIC"],
+                "typos": ["Additional Paid in Capitl", "Additonal Paid in Capital"]
+              },
+              "capital_stock": {
+                "primary_name": "Capital Stock",
+                "alternative_names": [
+                  "Common Stock",
+                  "Preferred Stock",
+                  "Share Capital",
+                  "Stock Capital",
+                  "Issued Capital",
+                  "Equity Shares",
+                  "Preference Shares",
+                  "Share Capital (Common)",
+                  "Share Capital (Preferred)"
+                ],
+                "abbreviations": ["CS", "SC"],
+                "typos": ["Captial Stock", "Capital Stcok"],
+                "notes": "Includes common and preferred stock, and Indian share terminology"
+              },
+              "shareholders_equity": {
+                "primary_name": "Shareholder's Equity",
+                "alternative_names": [
+                  "Stockholder's Equity",
+                  "Owners' Equity",
+                  "Equity (as a main category)",
+                  "Total Shareholder Equity",
+                  "Equity Section",
+                  "Equity Capital",
+                  "Owner Investment"
+                ],
+                "abbreviations": ["SE", "SHE", "OE"],
+                "typos": ["Shareholder Equity", "Shareholdr's Equity"],
+                "notes": "Often used interchangeably with Equity"
+              },
+              "retained_earnings": {
+                "primary_name": "Retained Earnings",
+                "alternative_names": [
+                  "Retained Profit",
+                  "Earned Surplus",
+                  "Undistributed Profit",
+                  "Accumulated Earnings",
+                  "Accumulated Profit",
+                  "Profit Retained",
+                  "RE"
+                ],
+                "abbreviations": ["RE", "Ret Earn"],
+                "typos": ["Retained Earning", "Retained Earnigs"]
+              },
+              "net_income": {
+                "primary_name": "Net Income",
+                "alternative_names": [
+                  "Profit and Loss (P&L)",
+                  "Current Year Earnings",
+                  "Income",
+                  "Net Profit",
+                  "Bottom Line",
+                  "Earnings",
+                  "Profit After Tax",
+                  "PAT",
+                  "Net Earnings"
+                ],
+                "abbreviations": ["NI", "NP", "PAT", "P&L"],
+                "typos": ["Net Inome", "Net Incme", "Net Profitt"],
+                "notes": "Refers to the current period's profit used as a closing entry to Retained Earnings"
+              }
+            }
+          }
+        }
+      },
+      "profit_and_loss_template_dentistry": {
+        "primary_name": "Profit & Loss template (Dentistry)",
+        "alternative_names": [
+          "P&L Statement",
+          "Income Statement",
+          "Statement of Operations",
+          "Revenue and Expense Report",
+          "P & L Report",
+          "Profit and Loss",
+          "Financial Performance",
+          "Income & Expense",
+          "Dental Practice P&L",
+          "Monthly Income Statement",
+          "Yearly Profit & Loss"
+        ],
+        "abbreviations": ["P&L", "P&L Statement", "IS", "SOO"],
+        "typos": ["Profit and Loss templat", "P&L templat", "Profit & Loss templete"],
+        "notes": "Specific P&L template for dentistry, typically for income and expenses."
+      },
+      "profit_and_loss_categories": {
+        "primary_name": "Profit and Loss Categories",
+        "subcategories": {
+          "income": {
+            "primary_name": "Income",
+            "alternative_names": [
+              "Revenue",
+              "Gross Income",
+              "Total Income",
+              "Top Line",
+              "Sales",
+              "Earnings",
+              "Clinic Income",
+              "Operating Income"
+            ],
+            "abbreviations": ["Inc", "Rev"],
+            "typos": ["Inome", "Incom"],
+            "accounts": {
+              "service_fee_income": {
+                "primary_name": "Service Fee Income",
+                "alternative_names": [
+                  "Dental Service Revenue",
+                  "Patient Fees",
+                  "Treatment Income",
+                  "Clinic Service Fees",
+                  "Dental Fees",
+                  "Procedure Income",
+                  "Gross Patient Receipts",
+                  "Hygiene Fees",
+                  "Consultation Fees",
+                  "Treatment Revenue",
+                  "Dental Sales",
+                  "Billing Revenue"
+                ],
+                "abbreviations": ["SFI", "Patient Fees"],
+                "typos": ["Service Fee Incom", "Service Fe Income"]
+              },
+              "refund": {
+                "primary_name": "Refund",
+                "alternative_names": [
+                  "Sales Returns",
+                  "Patient Refunds",
+                  "Returns & Allowances",
+                  "Customer Refunds",
+                  "Refunds Issued",
+                  "Credit Issued",
+                  "Returned Income",
+                  "Expense refund - incurred in prior period"
+                ],
+                "abbreviations": ["Rfd", "Returns"],
+                "typos": ["Refud", "Rfund"]
+              }
+            }
+          },
+          "expenses": {
+            "primary_name": "Expenses",
+            "alternative_names": [
+              "Operating Expenses",
+              "Costs",
+              "Expenditures",
+              "Total Expenses",
+              "Outflows",
+              "Overheads",
+              "Disbursements",
+              "Clinic Expenses"
+            ],
+            "abbreviations": ["Exp", "Opex"],
+            "typos": ["Expnses", "Expesnes"],
+            "accounts": {
+              "advertising_marketing": {
+                "primary_name": "Advertising & Marketing",
+                "alternative_names": [
+                  "Ad & Marketing",
+                  "Marketing Expenses",
+                  "Advertising Costs",
+                  "Promotional Expenses",
+                  "Website Advertising",
+                  "Social Media Ads",
+                  "Google Ads",
+                  "Print Advertising",
+                  "SEO Expenses",
+                  "Branding Costs",
+                  "Client Acquisition Costs"
+                ],
+                "abbreviations": ["Ad & Mktg", "Mktg Exp"],
+                "typos": ["Advertising & Markting", "Advertizing & Marketing"]
+              },
+              "amortization_expense": {
+                "primary_name": "Amortization",
+                "alternative_names": [
+                  "Amortization Expense",
+                  "Amortisation",
+                  "Intangible Asset Amortization",
+                  "Amortized Expense",
+                  "Expense - Amortization"
+                ],
+                "abbreviations": ["Amort Exp"],
+                "typos": ["Amortizaton", "Amortisation"]
+              },
+              "bank_charges_fees": {
+                "primary_name": "Bank Charges & Fees",
+                "alternative_names": [
+                  "Bank Fees",
+                  "Bank Service Charges",
+                  "Account Fees",
+                  "Transaction Fees",
+                  "Wire Transfer Fees",
+                  "ATM Fees",
+                  "Bank Charges",
+                  "Finance Charges (Bank)",
+                  "Overdraft Fees"
+                ],
+                "abbreviations": ["Bank Fees", "BCF"],
+                "typos": ["Bank Chages", "Banck Charges"]
+              },
+              "billing_expenses": {
+                "primary_name": "Billing Expenses",
+                "alternative_names": [
+                  "Billing & Collection Costs",
+                  "Collections Expense",
+                  "Medical Billing Fees",
+                  "Patient Billing Costs",
+                  "Billing Service Fees",
+                  "Revenue Cycle Management Fees",
+                  "Claim Submission Fees"
+                ],
+                "abbreviations": ["Bill Exp", "Collection Costs"],
+                "typos": ["Billing Expnses", "Biling Expenses"]
+              },
+              "car_truck": {
+                "primary_name": "Car & Truck",
+                "alternative_names": [
+                  "Vehicle Expenses",
+                  "Auto Expenses",
+                  "Motor Vehicle Expenses",
+                  "Fuel Expenses",
+                  "Gas & Oil",
+                  "Vehicle Maintenance",
+                  "Car Expenses",
+                  "Truck Expenses",
+                  "Company Vehicles"
+                ],
+                "abbreviations": ["Vehicle Exp", "Auto Exp"],
+                "typos": ["Car & Truk", "Vehicel Expenses"]
+              },
+              "charitable_contributions": {
+                "primary_name": "Charitable Contributions",
+                "alternative_names": [
+                  "Donations",
+                  "Charity",
+                  "Contributions",
+                  "Donations Made",
+                  "Giving Back",
+                  "Community Support"
+                ],
+                "abbreviations": ["Charity", "Donations"],
+                "typos": ["Charitable Contributons", "Charitible Contributions"]
+              },
+              "continuing_education": {
+                "primary_name": "Continuing Education",
+                "alternative_names": [
+                  "Professional Development",
+                  "Training Expenses",
+                  "Seminars & Workshops",
+                  "Education & Training",
+                  "CE Credits",
+                  "Conference Fees",
+                  "Courses",
+                  "Licensing Education"
+                ],
+                "abbreviations": ["CE", "PD"],
+                "typos": ["Continuing Educaton", "Continiung Education"]
+              },
+              "computer_internet": {
+                "primary_name": "Computer and internet",
+                "alternative_names": [
+                  "IT Expenses",
+                  "Technology Expenses",
+                  "Computer Expenses",
+                  "Internet Service",
+                  "Software Subscriptions (General)",
+                  "Hardware & Software (General)",
+                  "Wifi Expenses",
+                  "Broadband Costs",
+                  "Tech Support"
+                ],
+                "abbreviations": ["IT Exp", "Internet Exp"],
+                "typos": ["Computer and internert", "Compuer and Internet"]
+              },
+              "cleaning_fee": {
+                "primary_name": "Cleaning Fee",
+                "alternative_names": [
+                  "Janitorial Services",
+                  "Cleaning Services",
+                  "Sanitization Costs",
+                  "Maid Service",
+                  "Building Cleaning",
+                  "Disinfection Services",
+                  "Hygiene Services"
+                ],
+                "abbreviations": ["Cleaning", "Janitorial"],
+                "typos": ["Cleaning Fe", "Clenaing Fee"]
+              },
+              "contractors": {
+                "primary_name": "Contractors",
+                "alternative_names": [
+                  "Subcontractors",
+                  "Independent Contractors",
+                  "Freelancers",
+                  "1099 Workers",
+                  "External Services",
+                  "Contract Labor",
+                  "Outsourced Services"
+                ],
+                "abbreviations": ["Contract Labor", "Subcon"],
+                "typos": ["Contracors", "Contractorss"]
+              },
+              "contract_doctors": {
+                "primary_name": "Doctors (Contractors)",
+                "alternative_names": [
+                  "Contract Dentists",
+                  "Locum Doctors",
+                  "Associate Dentists (Contract)",
+                  "Consulting Dentists",
+                  "Hygienists (Contract)"
+                ],
+                "abbreviations": ["Locum Docs", "Assoc Docs"],
+                "typos": ["Contract Dentiss"]
+              },
+              "temporary_staff": {
+                "primary_name": "Temp (Contractors)",
+                "alternative_names": [
+                  "Temporary Staff",
+                  "Temporary Labor",
+                  "Staffing Agency Fees",
+                  "Temporary Employees"
+                ],
+                "abbreviations": ["Temp Staff", "Temp Labor"],
+                "typos": ["Temporary Staf"]
+              },
+              "dues_subscriptions": {
+                "primary_name": "Dues and Subscriptions",
+                "alternative_names": [
+                  "Memberships",
+                  "Professional Dues",
+                  "Association Fees",
+                  "Software Subscriptions",
+                  "Magazine Subscriptions",
+                  "Club Dues",
+                  "Licenses & Subscriptions"
+                ],
+                "abbreviations": ["Dues & Subs", "Memberships"],
+                "typos": ["Dues and Subscriptons", "Dues & Subscriptionss"]
+              },
+              "dental_supplies": {
+                "primary_name": "Dental Supplies",
+                "alternative_names": [
+                  "Clinic Supplies",
+                  "Medical Supplies",
+                  "Patient Supplies",
+                  "Consumables",
+                  "Dental Materials",
+                  "Supplies Expense",
+                  "Inventory Used (Dental)",
+                  "Oral Care Supplies",
+                  "Disposable Supplies"
+                ],
+                "abbreviations": ["DS", "Clinic Supp"],
+                "typos": ["Dental Supples", "Dentl Supplies"]
+              },
+              "dental_software": {
+                "primary_name": "Dental Software",
+                "alternative_names": [
+                  "Practice Management Software",
+                  "Dental Imaging Software",
+                  "Patient Management Software",
+                  "Dental IT Software",
+                  "Software Licenses (Dental)",
+                  "Charting Software",
+                  "Scheduling Software"
+                ],
+                "abbreviations": ["Dental SW", "PMS"],
+                "typos": ["Dental Softwar", "Dentl Software"]
+              },
+              "depreciation_expense": {
+                "primary_name": "Depreciation",
+                "alternative_names": [
+                  "Depreciation Expense",
+                  "Fixed Asset Depreciation",
+                  "Wear and Tear Expense",
+                  "Asset Depreciation",
+                  "Expense - Depreciation"
+                ],
+                "abbreviations": ["Dep Exp", "Deprec"],
+                "typos": ["Depreciaton", "Depreciation Expnese"]
+              },
+              "gift": {
+                "primary_name": "Gift",
+                "alternative_names": [
+                  "Gifts Given",
+                  "Client Gifts",
+                  "Patient Gifts",
+                  "Promotional Gifts",
+                  "Holiday Gifts",
+                  "Gifts & Recognition"
+                ],
+                "abbreviations": ["Gifts"],
+                "typos": ["Gft", "Gifft"]
+              },
+              "hiring_recruitment": {
+                "primary_name": "Hiring/Recruitment",
+                "alternative_names": [
+                  "Recruitment Fees",
+                  "Staffing Fees",
+                  "Hiring Costs",
+                  "Headhunter Fees",
+                  "Applicant Tracking System (ATS) Fees",
+                  "Job Board Fees",
+                  "Talent Acquisition Costs"
+                ],
+                "abbreviations": ["Hiring Costs", "Recruit Exp"],
+                "typos": ["Hiring/Recruitmen", "Hiring Recuritment"]
+              },
+              "interest_paid": {
+                "primary_name": "Interest Paid",
+                "alternative_names": [
+                  "Interest Expense",
+                  "Finance Charges",
+                  "Cost of Borrowing",
+                  "Interest on Loans",
+                  "Interest on Loan #",
+                  "Loan Interest - [Loan Name/Number]",
+                  "Interest Expense - Term Loan",
+                  "Business Loan Interest",
+                  "Equipment Loan Interest"
+                ],
+                "abbreviations": ["Int Exp", "Interest"],
+                "typos": ["Interest Paiid", "Interst Paid"]
+              },
+              "insurance": {
+                "primary_name": "Insurance",
+                "alternative_names": [
+                  "Insurance Expense",
+                  "Premiums Paid",
+                  "Business Insurance",
+                  "Commercial Insurance"
+                ],
+                "abbreviations": ["Ins Exp", "Insurance"],
+                "typos": ["Insuranc", "Insurnace"]
+              },
+              "car_insurance": {
+                "primary_name": "Car Insurance",
+                "alternative_names": [
+                  "Auto Insurance",
+                  "Vehicle Insurance",
+                  "Fleet Insurance"
+                ],
+                "abbreviations": ["Auto Ins", "Car Ins"],
+                "typos": ["Car Insuranc"]
+              },
+              "workers_compensation": {
+                "primary_name": "Worker's Compensation",
+                "alternative_names": [
+                  "Workers Comp",
+                  "W.C.",
+                  "Workmen's Compensation",
+                  "Comp Insurance"
+                ],
+                "abbreviations": ["WC", "Workers Comp"],
+                "typos": ["Worker's Compensaton"]
+              },
+              "malpractice_insurance": {
+                "primary_name": "Malpractice",
+                "alternative_names": [
+                  "Professional Liability Insurance",
+                  "E&O Insurance (Errors and Omissions)",
+                  "Dental Malpractice",
+                  "Indemnity Insurance"
+                ],
+                "abbreviations": ["Malpractice", "E&O"],
+                "typos": ["Malpratice"]
+              },
+              "liability_insurance": {
+                "primary_name": "Liability Insurance",
+                "alternative_names": [
+                  "General Liability Insurance",
+                  "Commercial General Liability",
+                  "Public Liability",
+                  "Business Liability"
+                ],
+                "abbreviations": ["GL", "Com GL"],
+                "typos": ["Liabilty Insurance"]
+              },
+              "disability_non_deductible": {
+                "primary_name": "Disability/ Non-Deductible",
+                "alternative_names": [
+                  "Non-Deductible Disability Insurance",
+                  "Owner Disability Insurance",
+                  "Personal Disability Insurance"
+                ],
+                "abbreviations": ["ND Disability"],
+                "typos": ["Disability Non-Deductible"]
+              },
+              "officer_health_non_deductible": {
+                "primary_name": "2%Officer Health/ Non-Deductible",
+                "alternative_names": [
+                  "Non-Deductible Officer Health Insurance",
+                  "Officer Medical Insurance (Non-Deductible)"
+                ],
+                "abbreviations": ["ND Officer Health"],
+                "typos": ["Officer Health Non-Deductible"]
+              },
+              "life_non_deductible": {
+                "primary_name": "Life/ Non-Deductible",
+                "alternative_names": [
+                  "Non-Deductible Life Insurance",
+                  "Key Person Life Insurance (Non-Deductible)"
+                ],
+                "abbreviations": ["ND Life"],
+                "typos": ["Life Non-Deductible"]
+              },
+              "legal_professional_services": {
+                "primary_name": "Legal & Professional Services",
+                "alternative_names": [
+                  "Professional Fees",
+                  "Consulting & Legal",
+                  "Professional Services",
+                  "Advisor Fees",
+                  "External Professional Services"
+                ],
+                "abbreviations": ["L&P", "Prof Fees"],
+                "typos": ["Legal & Professinal Services", "Legal & Profeesional Services"]
+              },
+              "accounting_fees": {
+                "primary_name": "Accounting",
+                "alternative_names": [
+                  "Accountant Fees",
+                  "Bookkeeping Fees",
+                  "Tax Preparation Fees",
+                  "Audit Fees",
+                  "CPA Fees"
+                ],
+                "abbreviations": ["Acctg Fees", "Bookkeeping"],
+                "typos": ["Acounting Fees"]
+              },
+              "consulting_fees": {
+                "primary_name": "Consulting Fees",
+                "alternative_names": [
+                  "Business Consulting",
+                  "Management Consulting",
+                  "Strategic Consulting",
+                  "IT Consulting"
+                ],
+                "abbreviations": ["Consulting"],
+                "typos": ["Consulting Feess"]
+              },
+              "legal_fees": {
+                "primary_name": "Legal Fees",
+                "alternative_names": [
+                  "Attorney Fees",
+                  "Legal Expenses",
+                  "Lawyer Fees",
+                  "Litigation Costs"
+                ],
+                "abbreviations": ["Legal Exp", "Lawyer Fees"],
+                "typos": ["Legal Feess"]
+              },
+              "lab_expenses": {
+                "primary_name": "Lab Expenses",
+                "alternative_names": [
+                  "Dental Lab Fees",
+                  "Laboratory Costs",
+                  "Outside Lab Fees",
+                  "Crown & Bridge Lab Fees",
+                  "Denture Lab Costs",
+                  "Orthodontic Lab Fees"
+                ],
+                "abbreviations": ["Lab Fees", "Dental Lab"],
+                "typos": ["Lab Expnses", "LAb Expenses"]
+              },
+              "meals_entertainment": {
+                "primary_name": "Meals & Entertainment",
+                "alternative_names": [
+                  "Entertainment Expenses",
+                  "Client Meals",
+                  "Business Meals",
+                  "Team Meals",
+                  "Restaurant Expenses",
+                  "Dine Out",
+                  "M&E"
+                ],
+                "abbreviations": ["M&E", "Meals Exp"],
+                "typos": ["Meals & Enterainment", "Meals & Entertaintment"]
+              },
+              "merchant_fees": {
+                "primary_name": "Merchant Fees",
+                "alternative_names": [
+                  "Credit Card Processing Fees",
+                  "Payment Processing Fees",
+                  "Transaction Processing Fees",
+                  "Payment Gateway Fees",
+                  "Stripe Fees",
+                  "Square Fees",
+                  "POS Fees"
+                ],
+                "abbreviations": ["Merchant", "Processing Fees"],
+                "typos": ["Merchant Feess", "Merhcant Fees"]
+              },
+              "outside_services": {
+                "primary_name": "Outside services",
+                "alternative_names": [
+                  "External Services",
+                  "Outsourced Services (General)",
+                  "Third-Party Services",
+                  "Consulting Services",
+                  "Contract Services (General)"
+                ],
+                "abbreviations": ["Outsourced Svcs", "External Svcs"],
+                "typos": ["Outside servicess", "Outisde services"]
+              },
+              "office_expenses": {
+                "primary_name": "Office Expenses",
+                "alternative_names": [
+                  "Office Supplies",
+                  "General Office Expenses",
+                  "Stationery",
+                  "Printing Costs",
+                  "Office Consumables",
+                  "Breakroom Supplies",
+                  "Admin Expenses"
+                ],
+                "abbreviations": ["Office Exp", "Admin Exp"],
+                "typos": ["Office Expnses", "Offce Expenses"]
+              },
+              "parking_tolls": {
+                "primary_name": "Parking & Tolls",
+                "alternative_names": [
+                  "Parking Fees",
+                  "Toll Charges",
+                  "Travel Tolls",
+                  "Vehicle Parking"
+                ],
+                "abbreviations": ["Parking", "Tolls"],
+                "typos": ["Parking & Tols", "Parkin & Tolls"]
+              },
+              "payroll_processing_fee": {
+                "primary_name": "Payroll Processing Fee",
+                "alternative_names": [
+                  "Payroll Service Fees",
+                  "Payroll Admin Fees",
+                  "Payroll Outsourcing Fees",
+                  "ADP Fees",
+                  "Gusto Fees",
+                  "Payroll Bureau Fees"
+                ],
+                "abbreviations": ["Payroll Proc Fee", "Payroll Service"],
+                "typos": ["Payroll Processsing Fee", "Payroll Processsing Fee"]
+              },
+              "postage_delivery": {
+                "primary_name": "Postage and Delivery",
+                "alternative_names": [
+                  "Shipping Costs",
+                  "Courier Charges",
+                  "Mail Expenses",
+                  "Shipping & Handling",
+                  "Delivery Fees",
+                  "Stamps"
+                ],
+                "abbreviations": ["Postage", "Shipping"],
+                "typos": ["Postage and Deliver", "Postgae and Delivery"]
+              },
+              "401k_company_match": {
+                "primary_name": "401K company Match",
+                "alternative_names": [
+                  "401k Employer Contribution",
+                  "Retirement Plan Match",
+                  "Company 401K Contribution",
+                  "Employer Retirement Contribution",
+                  "Pension Contributions"
+                ],
+                "abbreviations": ["401K Match"],
+                "typos": ["401K compny Match", "401K Commpany Match"]
+              },
+              "401k_set_up_fee": {
+                "primary_name": "401K Set up Fee",
+                "alternative_names": [
+                  "401K Admin Fees",
+                  "Retirement Plan Setup Fees",
+                  "401K Establishment Fee"
+                ],
+                "abbreviations": ["401K Setup"],
+                "typos": ["401K Set up Fe", "401k Sset up Fee"]
+              },
+              "401k_processing_fees": {
+                "primary_name": "401K Processing Fees",
+                "alternative_names": [
+                  "401K Service Fees",
+                  "Retirement Plan Processing Fees",
+                  "401K Recordkeeping Fees",
+                  "Plan Administration Fees"
+                ],
+                "abbreviations": ["401K Proc Fees"],
+                "typos": ["401K Processsing Fees", "401k Processing Feess"]
+              },
+              "payroll_expense": {
+                "primary_name": "Payroll expense",
+                "alternative_names": [
+                  "Wages & Salaries",
+                  "Employee Costs",
+                  "Staff Costs",
+                  "Labor Costs",
+                  "Compensation Expense",
+                  "Gross Payroll"
+                ],
+                "abbreviations": ["Payroll", "Wages & Sal"],
+                "typos": ["Payrol expense", "Payroll expesne"]
+              },
+              "employees_payroll_expenses": {
+                "primary_name": "Employees Payroll Expenses",
+                "alternative_names": [
+                  "Staff Wages",
+                  "Employee Salaries",
+                  "Hourly Wages",
+                  "Non-Officer Payroll",
+                  "Team Payroll"
+                ],
+                "abbreviations": ["Emp Payroll", "Staff Wages"],
+                "typos": ["Employees Payrol Expenses"]
+              },
+              "officers_compensation": {
+                "primary_name": "Officer's Compensation",
+                "alternative_names": [
+                  "Owner's Salary",
+                  "Executive Compensation",
+                  "Officer Wages",
+                  "Shareholder Salary",
+                  "Director's Remuneration"
+                ],
+                "abbreviations": ["Officer Comp", "Exec Comp"],
+                "typos": ["Officer's Compensaton"]
+              },
+              "rent_lease": {
+                "primary_name": "Rent & Lease",
+                "alternative_names": [
+                  "Rent Expense",
+                  "Lease Expense",
+                  "Occupancy Costs",
+                  "Rent & Utilities",
+                  "Rental Costs"
+                ],
+                "abbreviations": ["Rent Exp", "Lease Exp"],
+                "typos": ["Rent & Leasse", "Rent & Lese"]
+              },
+              "office_rent": {
+                "primary_name": "Office Rent",
+                "alternative_names": [
+                  "Clinic Rent",
+                  "Building Rent",
+                  "Premises Rent",
+                  "Commercial Rent"
+                ],
+                "abbreviations": ["Clinic Rent", "Building Rent"],
+                "typos": ["Offce Rent"]
+              },
+              "rental_equipment": {
+                "primary_name": "Rental Equipment",
+                "alternative_names": [
+                  "Equipment Lease",
+                  "Leased Equipment Expense",
+                  "Machinery Rental",
+                  "Instrument Rental"
+                ],
+                "abbreviations": ["Equip Lease", "Rent Equip"],
+                "typos": ["Rental Equipmnt"]
+              },
+              "home_office": {
+                "primary_name": "Home office",
+                "alternative_names": [
+                  "Home Office Expense",
+                  "Home Business Expense",
+                  "Deductible Home Office",
+                  "Utilities (Home Office)"
+                ],
+                "abbreviations": ["Home Office"],
+                "typos": ["Home offce"]
+              },
+              "repairs_maintenance": {
+                "primary_name": "Repairs & Maintenance",
+                "alternative_names": [
+                  "R&M",
+                  "Maintenance Expenses",
+                  "Building Repairs",
+                  "Equipment Repairs",
+                  "Property Maintenance",
+                  "Fixes & Upkeep",
+                  "Clinic Maintenance"
+                ],
+                "abbreviations": ["R&M", "Maint Exp"],
+                "typos": ["Repairs & Maintenence", "Repairs & Maintnance"]
+              },
+              "security_service": {
+                "primary_name": "Security service",
+                "alternative_names": [
+                  "Security Guard Services",
+                  "Alarm System Monitoring",
+                  "Surveillance Costs",
+                  "Security Fees",
+                  "Patrol Services"
+                ],
+                "abbreviations": ["Security Fees", "Sec Svc"],
+                "typos": ["Securty service", "Secuity service"]
+              },
+              "travel": {
+                "primary_name": "Travel",
+                "alternative_names": [
+                  "Travel Expenses",
+                  "Business Travel",
+                  "Transportation Expenses",
+                  "Airfare & Hotel",
+                  "Mileage Reimbursement",
+                  "Conference Travel"
+                ],
+                "abbreviations": ["Travel Exp"],
+                "typos": ["Traval", "Travell"]
+              },
+              "taxes_licenses": {
+                "primary_name": "Taxes & Licenses",
+                "alternative_names": [
+                  "Taxes Paid",
+                  "Business Taxes",
+                  "Government Fees",
+                  "Regulatory Fees"
+                ],
+                "abbreviations": ["Taxes", "Licenses"],
+                "typos": ["Taxes & Licnses", "Tax & Licenses"]
+              },
+              "city_county_tax_expenses": {
+                "primary_name": "City/ County Tax Expenses",
+                "alternative_names": [
+                  "Local Taxes",
+                  "Municipal Taxes",
+                  "Property Taxes (Local)",
+                  "County Taxes"
+                ],
+                "abbreviations": ["Local Taxes", "City Taxes"],
+                "typos": ["City/ County Tax Expneses"]
+              },
+              "payroll_tax_expenses": {
+                "primary_name": "Payroll Tax Expenses",
+                "alternative_names": [
+                  "Employer Payroll Taxes",
+                  "FICA Taxes",
+                  "SUI/FUTA",
+                  "Social Security Tax (Employer)",
+                  "Provident Fund Contributions (Employer)",
+                  "ESI Contributions (Employer)"
+                ],
+                "abbreviations": ["Payroll Tax", "Emp Payroll Tax"],
+                "typos": ["Payroll Tax Expneses"]
+              },
+              "sales_tax_expenses": {
+                "primary_name": "Sales Tax Expenses",
+                "alternative_names": [
+                  "Sales Tax Paid",
+                  "GST/VAT Paid",
+                  "Purchase Sales Tax"
+                ],
+                "abbreviations": ["Sales Tax", "VAT Exp"],
+                "typos": ["Sales Tax Expneses"]
+              },
+              "state_tax_expenses": {
+                "primary_name": "State Tax Expenses",
+                "alternative_names": [
+                  "State Income Tax",
+                  "State Franchise Tax",
+                  "State Business Tax"
+                ],
+                "abbreviations": ["State Tax"],
+                "typos": ["State Tax Expneses"]
+              },
+              "pte_pass_through_entity_tax": {
+                "primary_name": "PTE (Pass-Through Entity Tax)",
+                "alternative_names": [
+                  "Pass-Through Entity Tax Expense",
+                  "Entity Level Tax",
+                  "K-1 Election Tax"
+                ],
+                "abbreviations": ["PTE"],
+                "typos": ["PTE Pass-Through Entity Tax"]
+              },
+              "permits_licenses": {
+                "primary_name": "Permits and Licenses",
+                "alternative_names": [
+                  "Business Licenses",
+                  "Operating Permits",
+                  "Professional Licenses",
+                  "Regulatory Licenses",
+                  "Permit Fees"
+                ],
+                "abbreviations": ["Permits", "Licenses"],
+                "typos": ["Permits and Licneses"]
+              },
+              "telephone": {
+                "primary_name": "Telephone",
+                "alternative_names": [
+                  "Phone Expenses",
+                  "Communication Expenses",
+                  "Office Phone",
+                  "Mobile Phone Expenses",
+                  "Landline",
+                  "VoIP Services"
+                ],
+                "abbreviations": ["Phone Exp", "Comm Exp"],
+                "typos": ["Telephne", "Telephon"]
+              },
+              "utilities": {
+                "primary_name": "Utilities",
+                "alternative_names": [
+                  "Utility Expenses",
+                  "Electricity",
+                  "Gas",
+                  "Water",
+                  "Sewer",
+                  "Waste Disposal",
+                  "Power & Water",
+                  "Heat & Light"
+                ],
+                "abbreviations": ["Utils", "Utility Exp"],
+                "typos": ["Utilitis", "Utilitiess"]
+              },
+              "uniform": {
+                "primary_name": "Uniform",
+                "alternative_names": [
+                  "Staff Uniforms",
+                  "Workwear",
+                  "Scrubs",
+                  "Apparel Expenses",
+                  "Uniforms & Workwear"
+                ],
+                "abbreviations": ["Uniforms"],
+                "typos": ["Unifrom", "Uniforn"]
+              }
+            }
+          },
+          "other_income": {
+            "primary_name": "Other Income",
+            "alternative_names": [
+              "Non-Operating Income",
+              "Miscellaneous Income",
+              "Other Revenue",
+              "Sundry Income",
+              "Passive Income",
+              "Income (Other)"
+            ],
+            "abbreviations": ["OI", "Misc Inc"],
+            "typos": ["Oher Income", "Other Incom"],
+            "accounts": {
+              "interest_income": {
+                "primary_name": "Interest income",
+                "alternative_names": [
+                  "Interest Earned",
+                  "Bank Interest Income",
+                  "Investment Interest Income",
+                  "Interest Revenue"
+                ],
+                "abbreviations": ["Int Inc", "Interest Rev"],
+                "typos": ["Interest incom", "Interest Incom"]
+              },
+              "rewards": {
+                "primary_name": "Rewards",
+                "alternative_names": [
+                  "Cashback Rewards",
+                  "Credit Card Rewards",
+                  "Loyalty Program Rewards",
+                  "Bonus Income",
+                  "Incentive Income"
+                ],
+                "abbreviations": ["Rewards"],
+                "typos": ["Rewads", "Reards"]
+              }
+            }
+          },
+          "other_expenses": {
+            "primary_name": "Other Expenses",
+            "alternative_names": [
+              "Miscellaneous Expenses",
+              "Non-Operating Expenses",
+              "Sundry Expenses",
+              "General & Administrative (G&A)",
+              "Uncategorized Expenses",
+              "Expenses (Other)"
+            ],
+            "abbreviations": ["OE", "Misc Exp", "G&A"],
+            "typos": ["Oher Expenses", "Other Expneses"]
+          },
+          "cost_of_goods_sold_cogs": {
+            "primary_name": "Cost of Goods Sold (COGS)",
+            "alternative_names": [
+              "Cost of Sales",
+              "Cost of Products Sold (COPS)",
+              "Cost of Revenue",
+              "Direct Costs",
+              "Product Costs"
+            ],
+            "abbreviations": ["COGS", "COS", "COPS"],
+            "typos": ["Cost of Goods Solld", "COGSs"],
+            "accounts": {
+              "purchases_supplies_materials": {
+                "primary_name": "Purchases (Supplies & Materials)",
+                "alternative_names": [
+                  "Procurement",
+                  "Acquisition",
+                  "Buying",
+                  "Sourcing",
+                  "Inventory Purchases",
+                  "Raw Materials Purchases"
+                ],
+                "abbreviations": ["Purchases", "Supplies"],
+                "typos": ["Purchaes (Supplies & Materals)", "Purchases Suppliess"]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

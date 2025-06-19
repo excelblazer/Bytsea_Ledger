@@ -1,0 +1,320 @@
+{
+  "chart_of_accounts_validation": {
+    "version": "1.0",
+    "description": "Comprehensive validation dataset for Chart of Accounts ledger classification",
+    "categories": {
+      "current_assets": {
+        "primary_name": "Current Assets",
+        "subcategories": {
+          "bank_accounts": {
+            "primary_name": "Bank Account #1",
+            "alternative_names": [
+              "Checking",
+              "Savings",
+              "Money Market",
+              "Bank Account # 1",
+              "Bank Account 1",
+              "Checking Account",
+              "Primary Bank Account",
+              "Operating Cash",
+              "Cash in Bank",
+              "Bank - Checking",
+              "Cash and Cash Equivalents"
+            ],
+            "abbreviations": ["BA", "Chk", "Sav"],
+            "typos": ["Bnk Account", "Checkng", "Savngs"],
+            "erp_variations": {
+              "quickbooks": ["Checking", "Savings", "Money Market"],
+              "sage": ["Bank Current Account", "Cash at Bank"],
+              "xero": ["Business Bank Account", "Checking Account"]
+            },
+            "hierarchical_patterns": [
+              "Current Asset - Bank Account",
+              "Liquid Asset - Checking Account",
+              "Assets - Current - Bank"
+            ]
+          },
+          "accounts_receivable": {
+            "primary_name": "Accounts Receivable",
+            "alternative_names": [
+              "Account Receivable",
+              "Receivable Accounts",
+              "Trade Receivables",
+              "Customer Receivables",
+              "Debtors",
+              "A/R",
+              "AR"
+            ],
+            "abbreviations": ["AR", "A/R", "Recv", "Rcv"],
+            "typos": ["Accunts Receivable", "Accounts Recievable", "Account Recievables"],
+            "erp_variations": {
+              "quickbooks": ["Accounts Receivable (A/R)", "A/R"],
+              "sage": ["Trade Debtors", "Accounts Receivable"],
+              "xero": ["Accounts Receivable", "Trade Debtors"]
+            },
+            "hierarchical_patterns": [
+              "Current Assets - Accounts Receivable",
+              "Assets - Trade Receivables",
+              "Receivables - Trade"
+            ]
+          },
+          "other_current_assets": {
+            "primary_name": "Other Current Assets",
+            "alternative_names": [
+              "Other Current Asset",
+              "Prepaid Expenses",
+              "Undeposited Funds",
+              "Inventory",
+              "Prepaid Insurance",
+              "Advance Payments",
+              "Short-term Investments"
+            ],
+            "abbreviations": ["OCA", "Prepaid", "Inv"],
+            "typos": ["Other Curent Assets", "Prepayed Expenses"],
+            "erp_variations": {
+              "quickbooks": ["Other Current Asset", "Prepaid Expenses", "Undeposited Funds"],
+              "sage": ["Other Debtors", "Prepayments"],
+              "xero": ["Current Assets", "Prepayments"]
+            },
+            "hierarchical_patterns": [
+              "Current Assets - Other",
+              "Assets - Current - Miscellaneous"
+            ]
+          }
+        }
+      },
+      "fixed_assets": {
+        "primary_name": "Fixed Assets",
+        "subcategories": {
+          "dental_equipment": {
+            "primary_name": "Dental Equipment",
+            "alternative_names": [
+              "Medical Equipment",
+              "Equipment - Dental",
+              "Capital Asset - Dental Machinery",
+              "Fixed Asset - Dental Equipment",
+              "Equipment (Fixed) - Dental",
+              "Dental Machinery",
+              "Professional Equipment",
+              "Practice Equipment"
+            ],
+            "abbreviations": ["DE", "Dental Eq", "Med Eq"],
+            "typos": ["Dentl Equipment", "Dental Equipmnt"],
+            "industry_specific": true,
+            "erp_variations": {
+              "quickbooks": ["Machinery & Equipment", "Equipment"],
+              "sage": ["Plant and Equipment", "Fixed Assets - Equipment"],
+              "xero": ["Fixed Assets", "Equipment"]
+            },
+            "hierarchical_patterns": [
+              "Fixed Assets - Dental Equipment",
+              "Assets - Fixed - Equipment - Dental",
+              "Capital Assets - Dental"
+            ]
+          },
+          "office_equipment": {
+            "primary_name": "Office Equipment",
+            "alternative_names": [
+              "Equipment - Office",
+              "Fixed Asset - Office Equipment",
+              "Furniture and Equipment",
+              "Computer Equipment",
+              "IT Equipment",
+              "Office Furniture"
+            ],
+            "abbreviations": ["OE", "Office Eq", "IT Eq"],
+            "typos": ["Ofice Equipment", "Office Equipmnt"],
+            "erp_variations": {
+              "quickbooks": ["Machinery & Equipment", "Office Equipment"],
+              "sage": ["Office Equipment", "Furniture and Fittings"],
+              "xero": ["Fixed Assets", "Office Equipment"]
+            },
+            "hierarchical_patterns": [
+              "Fixed Assets - Office Equipment",
+              "Assets - Fixed Assets - Office Equipment"
+            ]
+          },
+          "buildings": {
+            "primary_name": "Buildings",
+            "alternative_names": [
+              "Building",
+              "Real Estate",
+              "Property",
+              "Land and Buildings",
+              "Premises",
+              "Fixed Asset - Buildings"
+            ],
+            "abbreviations": ["Bldg", "RE", "Prop"],
+            "typos": ["Builidngs", "Buldings"],
+            "erp_variations": {
+              "quickbooks": ["Buildings", "Land"],
+              "sage": ["Land and Buildings", "Property"],
+              "xero": ["Fixed Assets", "Buildings"]
+            },
+            "hierarchical_patterns": [
+              "Fixed Assets - Buildings",
+              "Assets - Fixed - Real Estate"
+            ]
+          }
+        },
+        "accumulated_depreciation": {
+          "primary_name": "Accumulated Depreciation",
+          "alternative_names": [
+            "Depreciation, Accumulated",
+            "Accumulated Depreciation - Office Equipment",
+            "Accumulated Depreciation - Dental Equipment",
+            "Depreciation Reserve",
+            "Provision for Depreciation"
+          ],
+          "abbreviations": ["Accum Depr", "AD", "Depr"],
+          "typos": ["Accumulated Depriciation", "Acumulated Depreciation"],
+          "erp_variations": {
+            "quickbooks": ["Accumulated Depreciation - [Asset Type]", "Depreciation, Accumulated"],
+            "sage": ["Depreciation Provisions", "Accumulated Depreciation"],
+            "xero": ["Accumulated Depreciation", "Depreciation"]
+          },
+          "hierarchical_patterns": [
+            "Fixed Assets - Accumulated Depreciation",
+            "Assets - Depreciation - Accumulated"
+          ]
+        }
+      },
+      "current_liabilities": {
+        "primary_name": "Current Liabilities",
+        "subcategories": {
+          "accounts_payable": {
+            "primary_name": "Accounts Payable",
+            "alternative_names": [
+              "Account Payable",
+              "Payable Accounts",
+              "Trade Payables",
+              "Creditors",
+              "Suppliers",
+              "A/P",
+              "AP"
+            ],
+            "abbreviations": ["AP", "A/P", "Pay", "Cred"],
+            "typos": ["Accunts Payable", "Accounts Payabel"],
+            "erp_variations": {
+              "quickbooks": ["Accounts Payable (A/P)", "A/P"],
+              "sage": ["Trade Creditors", "Accounts Payable"],
+              "xero": ["Accounts Payable", "Trade Creditors"]
+            },
+            "hierarchical_patterns": [
+              "Current Liabilities - Accounts Payable",
+              "Liabilities - Trade Payables",
+              "Payables - Trade"
+            ]
+          },
+          "other_current_liabilities": {
+            "primary_name": "Other Current Liabilities",
+            "alternative_names": [
+              "Other Current Liability",
+              "Sales Tax Payable",
+              "Unearned Revenue",
+              "Accrued Expenses",
+              "Short-term Debt",
+              "Current Portion of Long-term Debt"
+            ],
+            "abbreviations": ["OCL", "Sales Tax", "Unearned Rev"],
+            "typos": ["Other Curent Liabilities", "Unearnerd Revenue"],
+            "erp_variations": {
+              "quickbooks": ["Other Current Liability", "Sales Tax Payable", "Unearned Revenue"],
+              "sage": ["Other Creditors", "Accruals"],
+              "xero": ["Current Liabilities", "GST Payable"]
+            },
+            "hierarchical_patterns": [
+              "Current Liabilities - Other",
+              "Liabilities - Current - Miscellaneous"
+            ]
+          }
+        }
+      },
+      "equity": {
+        "primary_name": "Equity",
+        "subcategories": {
+          "retained_earnings": {
+            "primary_name": "Retained Earnings",
+            "alternative_names": [
+              "Accumulated Profits",
+              "Undistributed Profits",
+              "Profit and Loss Account",
+              "Earnings Retained",
+              "Accumulated Earnings"
+            ],
+            "abbreviations": ["RE", "Ret Earn", "Accum Profit"],
+            "typos": ["Retained Earings", "Retaind Earnings"],
+            "erp_variations": {
+              "quickbooks": ["Retained Earnings"],
+              "sage": ["Profit and Loss Account", "Retained Earnings"],
+              "xero": ["Retained Earnings", "Current Year Earnings"]
+            },
+            "hierarchical_patterns": [
+              "Equity - Retained Earnings",
+              "Owner's Equity - Retained Earnings"
+            ]
+          },
+          "net_income": {
+            "primary_name": "Net Income",
+            "alternative_names": [
+              "Profit & Loss",
+              "Current Year Earnings",
+              "Net Profit",
+              "Bottom Line",
+              "Earnings",
+              "Income Summary"
+            ],
+            "abbreviations": ["NI", "P&L", "Net Prof"],
+            "typos": ["Net Incom", "Net Incme"],
+            "erp_variations": {
+              "quickbooks": ["Net Income", "Profit & Loss Summary"],
+              "sage": ["Profit and Loss", "Current Year Profit"],
+              "xero": ["Net Profit", "Current Year Earnings"]
+            },
+            "hierarchical_patterns": [
+              "Equity - Net Income",
+              "Owner's Equity - Current Earnings"
+            ]
+          }
+        }
+      }
+    },
+    "validation_rules": {
+      "merger_detection": {
+        "description": "Check if chart of account has been merged with any other ledger",
+        "action": "categorize under new head and update learning model"
+      },
+      "not_found_handling": {
+        "description": "CoA not found in current Chart of Accounts",
+        "action": "check for mergers, then categorize and update model"
+      },
+      "fuzzy_matching": {
+        "enabled": true,
+        "threshold": 0.8,
+        "methods": ["levenshtein", "soundex", "metaphone"]
+      },
+      "case_sensitivity": false,
+      "punctuation_normalization": true,
+      "whitespace_normalization": true
+    },
+    "common_patterns": {
+      "hierarchical_separators": ["-", ":", ".", " - ", " : "],
+      "parenthetical_info": {
+        "pattern": "\\([^)]*\\)",
+        "action": "extract_and_match_separately"
+      },
+      "numbering_patterns": [
+        "#1", "# 1", "1", "(1)", "[1]"
+      ],
+      "industry_indicators": [
+        "dental", "medical", "professional", "practice", "clinic"
+      ]
+    },
+    "learning_model_updates": {
+      "frequency": "real_time",
+      "confidence_threshold": 0.9,
+      "human_validation_required": true,
+      "backup_original_mapping": true
+    }
+  }
+}

@@ -1,0 +1,335 @@
+{
+  "accounting_rules": {
+    "metadata": {
+      "version": "1.0",
+      "created_date": "2025-06-19",
+      "description": "Comprehensive accounting rule dataset for automated ledger classification",
+      "market": "US",
+      "currency": "USD"
+    },
+    "business_context_classification": {
+      "ai_model_config": {
+        "layer_1": {
+          "name": "Business Profile Classification",
+          "model_type": "Multi-class Text Classifier",
+          "input": ["company_description", "website_text", "industry_codes"],
+          "output": "business_profile",
+          "confidence_threshold": 0.75
+        },
+        "layer_2": {
+          "name": "Transaction Intent Classification",
+          "model_type": "Multi-class Text Classifier", 
+          "input": ["transaction_description", "merchant_name", "mcc_code"],
+          "output": "transaction_item_category",
+          "confidence_threshold": 0.70
+        }
+      },
+      "business_profiles": [
+        {
+          "profile": "Restaurant (Full-Service)",
+          "keywords": ["fine dining", "restaurant", "catering", "food service", "culinary"],
+          "naics_codes": ["722511"]
+        },
+        {
+          "profile": "Restaurant (Quick Service/Delivery-Focused)",
+          "keywords": ["fast food", "delivery", "takeout", "quick service", "drive-thru"],
+          "naics_codes": ["722513"]
+        },
+        {
+          "profile": "Dental Clinic",
+          "keywords": ["dental", "dentist", "oral health", "dental care", "orthodontics"],
+          "naics_codes": ["621210"]
+        },
+        {
+          "profile": "Software Development Firm",
+          "keywords": ["software", "development", "SaaS", "cloud solutions", "technology"],
+          "naics_codes": ["541511"]
+        },
+        {
+          "profile": "Consulting Firm",
+          "keywords": ["consulting", "advisory", "management consulting", "professional services"],
+          "naics_codes": ["541611"]
+        },
+        {
+          "profile": "Pharma Manufacturer",
+          "keywords": ["pharmaceutical", "drug manufacturing", "medical devices", "biotechnology"],
+          "naics_codes": ["325412"]
+        }
+      ]
+    },
+    "fixed_assets": {
+      "rules": {
+        "threshold_validation": {
+          "default_threshold": 2500,
+          "client_specific": true,
+          "threshold_column": "asset_threshold_amount"
+        },
+        "identification_logic": [
+          {
+            "step": 1,
+            "description": "Identify transactions above threshold",
+            "condition": "amount >= threshold_amount"
+          },
+          {
+            "step": 2,
+            "description": "Check for installment patterns",
+            "condition": "recurring_payment == true AND same_amount == true AND periodic_basis == true"
+          },
+          {
+            "step": 3,
+            "description": "Validate industry-specific assets",
+            "condition": "match_industry_asset_keywords == true"
+          }
+        ]
+      },
+      "categories": [
+        {
+          "category": "Dental Equipment",
+          "industry": "Dental Clinic",
+          "keywords": ["dental chair", "x-ray machine", "sterilization unit", "dental handpiece", "cerec machine", "autoclave", "ultrasonic cleaner", "panoramic", "intraoral", "dental unit", "air compressor", "vacuum system"],
+          "common_vendors": ["Henry Schein", "Patterson Dental", "Benco Dental"],
+          "typical_amount_range": [5000, 100000]
+        },
+        {
+          "category": "Office Equipment",
+          "industry": "General",
+          "keywords": ["computer", "laptop", "printer", "scanner", "server", "monitor", "phone system", "copier", "software"],
+          "common_vendors": ["Dell", "HP", "Apple", "Best Buy", "Staples", "Office Depot"],
+          "typical_amount_range": [500, 25000]
+        },
+        {
+          "category": "Furniture",
+          "industry": "General",
+          "keywords": ["desk", "chair", "sofa", "table", "furniture", "reception desk", "filing cabinet", "office furniture"],
+          "common_vendors": ["IKEA", "West Elm", "Staples", "Office Depot", "Target"],
+          "typical_amount_range": [300, 15000]
+        },
+        {
+          "category": "Leasehold Improvement",
+          "industry": "General",
+          "keywords": ["renovation", "construction", "electrical", "plumbing", "flooring", "painting", "contractor"],
+          "common_vendors": ["Home Depot", "Lowe's", "contractor names", "architect", "designer"],
+          "typical_amount_range": [1000, 500000],
+          "note": "Requires invoice correlation for proper identification"
+        }
+      ],
+      "installment_detection": {
+        "loan_keywords": ["loan", "financing", "credit"],
+        "lease_keywords": ["lease", "rental", "leasing"],
+        "working_capital_keywords": ["credit facility", "working capital", "line of credit"]
+      }
+    },
+    "payroll": {
+      "service_providers": [
+        "ADP", "Paychex", "Gusto", "QuickBooks Payroll", "OnPay", "Rippling", 
+        "Patriot Software", "SurePayroll", "Square Payroll", "Paycor", 
+        "Paylocity", "Justworks", "TriNet", "Wave Payroll", "Zenefits",
+        "Remote", "Deel", "Papaya Global", "Ceridian Dayforce", "iSolved"
+      ],
+      "core_keywords": [
+        "wage", "wages", "salary", "salaries", "payroll", "pay", "earnings", 
+        "compensation", "direct deposit", "dd", "ach credit", "net pay", 
+        "gross pay", "bi-weekly", "monthly", "weekly"
+      ],
+      "federal_taxes": {
+        "employee_deductions": {
+          "keywords": ["federal tax", "fed tax", "irs tax", "income tax", "fed inc tx", "us tax", "tax withholding", "withholding", "fica", "social security", "medicare", "ss tax", "med tax", "fica tax"],
+          "payroll_processor_patterns": ["ADP FEDERAL TAX", "PAYCHEX FED WHT", "GUSTO FICA"]
+        },
+        "employer_payments": {
+          "keywords": ["irs payment", "federal tax payment", "fed tax deposit", "us treasury tax payment", "treasury irs", "futa", "941 payment", "940 payment", "eftps payment"],
+          "recipients": ["US TREASURY", "IRS", "EFTPS"],
+          "frequency": "quarterly",
+          "due_dates": ["2025-04-30", "2025-07-31", "2025-10-31", "2026-01-31"]
+        }
+      },
+      "state_taxes": {
+        "employee_deductions": {
+          "keywords": ["state tax", "sit", "state wht", "sdi", "pfl", "disability tax", "paid leave", "city tax", "local tax"],
+          "state_specific_patterns": ["CA TAX", "NY SUI", "PA PIT", "CA SDI", "NY PFL", "PHILA WHT", "NYC TAX"]
+        },
+        "employer_payments": {
+          "keywords": ["state tax payment", "state treasury", "dept rev", "suta", "ui tax", "unemployment tax", "ett"],
+          "state_agencies": ["Department of Revenue", "Department of Labor", "Treasury"]
+        }
+      }
+    },
+    "retirement_401k": {
+      "identification_rules": {
+        "trust_company_keywords": ["Matrix Trust Co", "trust company", "pension fund", "401k", "retirement plan"],
+        "transaction_types": [
+          {
+            "type": "setup_fee",
+            "characteristics": ["first_transaction", "lower_amount", "one_time"],
+            "typical_amount_range": [50, 500]
+          },
+          {
+            "type": "processing_fee", 
+            "characteristics": ["recurring", "fixed_amount", "monthly"],
+            "typical_amount_range": [25, 200]
+          },
+          {
+            "type": "contribution",
+            "characteristics": ["highest_amount", "regular_frequency"],
+            "typical_amount_range": [500, 50000]
+          }
+        ]
+      }
+    },
+    "insurance": {
+      "categories": [
+        {
+          "type": "Health Insurance",
+          "keywords": ["health", "medical", "hospital", "healthcare", "wellness", "rx", "pharmacy", "premium", "copay", "deductible", "coinsurance", "hmo", "ppo", "epo", "pos", "hdhp", "fsa", "hsa", "medicare", "medicaid", "aca", "cobra"],
+          "major_insurers": ["Aetna", "UnitedHealthcare", "Cigna", "Humana", "Kaiser Permanente", "Blue Cross Blue Shield", "Anthem", "Optum", "Centene", "Molina Healthcare"],
+          "transaction_examples": ["UNITEDHEALTHCARE PREMIUM", "AETNA HEALTH PAY", "CIGNA HEALTH COPAY"]
+        },
+        {
+          "type": "Malpractice Insurance",
+          "keywords": ["malpractice", "medical malpractice", "professional liability", "e&o", "errors omissions", "professional indemnity", "physician liability", "doctor insurance", "clinic liability"],
+          "major_insurers": ["The Doctors Company", "MedPro Group", "Coverys", "Norcal Mutual", "ProAssurance", "MagMutual"],
+          "industry_specific": ["healthcare", "legal", "consulting"]
+        },
+        {
+          "type": "Commercial General Liability",
+          "keywords": ["commercial liability", "general liability", "business liability", "cgl policy"],
+          "major_insurers": ["Chubb", "Travelers", "Liberty Mutual", "Hartford", "AIG", "Zurich"]
+        },
+        {
+          "type": "Workers Compensation",
+          "keywords": ["workers comp", "workman's compensation", "wc policy", "employer liability"],
+          "major_insurers": ["State Fund", "Liberty Mutual", "Travelers", "Zurich"]
+        },
+        {
+          "type": "Directors & Officers",
+          "keywords": ["d&o", "directors and officers", "executive liability", "corporate governance liability"],
+          "major_insurers": ["Chubb", "AIG", "Travelers"]
+        },
+        {
+          "type": "Cyber Insurance",
+          "keywords": ["cyber insurance", "data breach insurance", "cyber liability", "ransomware coverage"],
+          "major_insurers": ["AIG", "Chubb", "Travelers", "Coalition", "Beazley"]
+        },
+        {
+          "type": "Commercial Auto",
+          "keywords": ["commercial auto", "fleet insurance", "business vehicle insurance"],
+          "major_insurers": ["Progressive", "State Farm", "Nationwide"]
+        }
+      ]
+    },
+    "liabilities_loans": {
+      "categories": [
+        {
+          "type": "Mortgage",
+          "keywords": ["mortgage", "home loan", "house payment", "housing payment", "escrow", "piti", "pmi", "heloc"],
+          "major_servicers": ["Chase Mortgage", "Wells Fargo Home Mortgage", "Quicken Loans", "Rocket Mortgage", "Freedom Mortgage", "PennyMac", "Mr. Cooper"]
+        },
+        {
+          "type": "Auto Loan",
+          "keywords": ["auto loan", "car loan", "vehicle payment", "auto finance", "truck payment", "lease payment"],
+          "major_lenders": ["Ally Financial", "Capital One Auto Finance", "Chase Auto", "Toyota Financial Services", "Ford Credit", "GM Financial"]
+        },
+        {
+          "type": "Student Loan",
+          "keywords": ["student loan", "fed loan", "grad loan", "education loan", "college loan", "student debt"],
+          "major_servicers": ["Nelnet", "Aidvantage", "MOHELA", "Sallie Mae", "Discover Student Loans", "SoFi", "Earnest"]
+        },
+        {
+          "type": "Personal Loan",
+          "keywords": ["personal loan", "consumer loan", "unsecured loan", "installment loan", "signature loan"],
+          "major_lenders": ["Marcus by Goldman Sachs", "LightStream", "Upstart", "LendingClub", "Prosper", "OneMain Financial"]
+        },
+        {
+          "type": "Credit Card Payment",
+          "keywords": ["credit card payment", "cc payment", "card services", "bill payment", "account payment", "charge card"],
+          "major_issuers": ["Amex", "Discover", "Chase Card Services", "Citi Cards", "Capital One Credit Card", "Barclays Bank Delaware"]
+        },
+        {
+          "type": "Business Loan",
+          "keywords": ["business loan", "commercial loan", "term loan", "sba loan", "working capital", "equipment loan", "small business loan"],
+          "major_lenders": ["Chase", "Wells Fargo", "Bank of America", "Citi", "SBA"]
+        },
+        {
+          "type": "Line of Credit",
+          "keywords": ["line of credit", "loc", "heloc", "draw", "advance", "revolving credit", "credit line payment", "business line of credit", "bloc"]
+        }
+      ],
+      "transaction_modifiers": ["ach", "autopay", "eft", "deduction", "wire", "online pmt", "bill pay"]
+    },
+    "validation_rules": {
+      "confidence_thresholds": {
+        "high_confidence": 0.85,
+        "medium_confidence": 0.70,
+        "low_confidence": 0.50,
+        "human_review_threshold": 0.70
+      },
+      "industry_context_rules": [
+        {
+          "if_business_profile": "Dental Clinic",
+          "and_transaction_category": "Equipment Purchase",
+          "and_keywords_match": ["dental chair", "x-ray", "sterilization"],
+          "then_classify_as": "Fixed Asset - Dental Equipment",
+          "confidence_boost": 0.15
+        },
+        {
+          "if_business_profile": "Restaurant",
+          "and_transaction_category": "Food Delivery",
+          "and_amount_range": [10, 500],
+          "then_classify_as": "Selling Expense - Delivery Costs",
+          "confidence_boost": 0.10
+        },
+        {
+          "if_business_profile": "Software Development",
+          "and_transaction_category": "Equipment Purchase",
+          "and_keywords_match": ["computer", "server", "software"],
+          "then_classify_as": "Fixed Asset - Office Equipment",
+          "confidence_boost": 0.12
+        }
+      ],
+      "amount_based_rules": [
+        {
+          "rule": "large_transaction_review",
+          "condition": "amount > 10000",
+          "action": "flag_for_human_review",
+          "reason": "Large transaction requires verification"
+        },
+        {
+          "rule": "asset_threshold_check",
+          "condition": "amount >= asset_threshold AND category_matches_asset_keywords",
+          "action": "classify_as_fixed_asset",
+          "additional_validation": "check_industry_context"
+        }
+      ],
+      "recurring_pattern_rules": [
+        {
+          "rule": "payroll_detection",
+          "condition": "recurring_bi_weekly OR recurring_monthly AND payroll_keywords_match",
+          "action": "classify_as_payroll_expense"
+        },
+        {
+          "rule": "loan_payment_detection", 
+          "condition": "recurring_monthly AND loan_keywords_match AND consistent_amount",
+          "action": "classify_as_loan_payment"
+        }
+      ]
+    },
+    "output_mappings": {
+      "quickbooks_accounts": {
+        "Fixed Asset - Dental Equipment": "1400 - Dental Equipment",
+        "Fixed Asset - Office Equipment": "1500 - Office Equipment", 
+        "Fixed Asset - Furniture": "1600 - Furniture & Fixtures",
+        "Fixed Asset - Leasehold Improvement": "1700 - Leasehold Improvements",
+        "Payroll Expense": "6000 - Payroll Expenses",
+        "Federal Payroll Tax": "2100 - Federal Payroll Tax Payable",
+        "State Payroll Tax": "2200 - State Payroll Tax Payable",
+        "401K Contribution": "6500 - Employee Benefits - 401K",
+        "Health Insurance": "6400 - Employee Benefits - Health Insurance",
+        "Malpractice Insurance": "6800 - Professional Insurance",
+        "General Liability Insurance": "6810 - General Liability Insurance",
+        "Loan Payment - Principal": "2000 - Notes Payable",
+        "Loan Payment - Interest": "7000 - Interest Expense",
+        "Credit Card Payment": "2500 - Credit Card Payable"
+      }
+    }
+  }
+}

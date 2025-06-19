@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bytsea Ledger</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class', // Or 'media' if you prefer OS-level dark mode
+        theme: {
+          extend: {
+            colors: {
+              background: '#111827', // Very Dark Blue/Slate (e.g., slate-900)
+              surface: '#1F2937',   // Darker Gray/Slate for cards (e.g., slate-800)
+              primary: {
+                DEFAULT: '#3B82F6', // Vibrant Blue (e.g., blue-500)
+                light: '#60A5FA', // Lighter Blue (e.g., blue-400)
+                dark: '#2563EB',  // Darker Blue (e.g., blue-600)
+              },
+              secondary: {
+                DEFAULT: '#6366F1', // Indigo (e.g., indigo-500)
+                light: '#818CF8',
+                dark: '#4F46E5',
+              },
+              accent: {
+                DEFAULT: '#10B981', // Green (e.g., emerald-500)
+                light: '#34D399',
+                dark: '#059669',
+              },
+              textPrimary: '#E5E7EB',    // Light Gray for main text (e.g., gray-200)
+              textSecondary: '#D1D5DB', // Slightly darker Light Gray (e.g., gray-300)
+              placeholderText: '#9CA3AF', // Medium Gray for placeholders (e.g., gray-400)
+              borderNeutral: '#374151', // Dark Gray for borders (e.g., gray-700)
+              borderFocus: '#3B82F6', // Blue for focus rings (matches primary)
+
+              // Existing neutral colors - adjust if needed for dark theme nuances
+              neutral: {
+                light: '#374151', // Was F5F5F5
+                DEFAULT: '#4B5563', // Was E0E0E0
+                dark: '#6B7280',   // Was 757575
+              }
+            }
+          }
+        }
+      }
+    </script>
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.1.0",
+    "react/": "https://esm.sh/react@^19.1.0/",
+    "@google/genai": "https://esm.sh/@google/genai@^1.5.1",
+    "uuid": "https://esm.sh/uuid@^11.1.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.1.0/",
+    "xlsx": "https://esm.sh/xlsx@^0.18.5"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body class="bg-background text-textPrimary antialiased">
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+</body>
+</html>

@@ -8,6 +8,8 @@ import LoadingSpinner from './components/LoadingSpinner';
 import AddEntityModal from './components/AddEntityModal';
 import ColumnMappingModal from './components/ColumnMappingModal';
 import ApiKeySetup from './components/ApiKeySetup'; 
+import SettingsModal from './components/SettingsModal';
+import SettingsMenu from './components/SettingsMenu';
 import {
     Client, Book, Industry, ProcessingJob, Transaction, JobStatus,
     EntityType, UserColumnMapping, RawTransactionData, ExportedTrainingDataContainer, RuleFileType
@@ -58,6 +60,10 @@ const App: React.FC = () => {
     coaAlternateNames: useRef<HTMLInputElement>(null),
   };
 
+  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
+  const [settingsView, setSettingsView] = useState<'export' | 'customize' | null>(null);
+  const [isSettingsMenuOpen, setIsSettingsMenuOpen] = useState(false);
+  const settingsMenuRef = useRef<HTMLDivElement>(null);
 
   const isProcessingBlocked = currentJob?.status === JobStatus.PROCESSING ||
                               currentJob?.status === JobStatus.VALIDATING || apiKeyLoading;
@@ -617,26 +623,46 @@ const App: React.FC = () => {
                     {APP_TITLE}
                 </span>
             </h1>
-            <div className="flex items-center space-x-3">
-                {!isApiKeyNeeded && (
+            <div className="flex items-center space-x-3 relative">
+              <button
+                onClick={() => setIsSettingsMenuOpen((v) => !v)}
+                title="Settings"
+                className="p-2 text-textSecondary hover:text-primary rounded-full transition-colors"
+              >
+                <CogIcon className="w-6 h-6" />
+              </button>
+              {isSettingsMenuOpen && (
+                <div ref={settingsMenuRef}>
+                  <SettingsMenu
+                    onSelect={(option) => {
+                      setIsSettingsMenuOpen(false);
+                      if (option) {
+                        setSettingsView(option);
+                        setIsSettingsModalOpen(true);
+                      }
+                    }}
+                  />
+                </div>
+              )}
+              {!isApiKeyNeeded && (
                 <button
-                    onClick={handleResetJob}
-                    title="Reset Current Job & Upload"
-                    className="p-2 text-textSecondary hover:text-primary rounded-full transition-colors disabled:opacity-50"
-                    disabled={isProcessingBlocked}
+                  onClick={handleResetJob}
+                  title="Reset Current Job & Upload"
+                  className="p-2 text-textSecondary hover:text-primary rounded-full transition-colors disabled:opacity-50"
+                  disabled={isProcessingBlocked}
                 >
-                    <TrashIcon className="w-6 h-6" />
+                  <TrashIcon className="w-6 h-6" />
                 </button>
-                )}
-                {apiKey && !isApiKeyNeeded && (
-                    <button
-                        onClick={handleClearApiKey}
-                        title="Change API Key"
-                        className="p-2 text-xs text-textSecondary hover:text-primary rounded-md border border-borderNeutral hover:border-primary transition-colors"
-                    >
-                        Change API Key
-                    </button>
-                )}
+              )}
+              {apiKey && !isApiKeyNeeded && (
+                <button
+                  onClick={handleClearApiKey}
+                  title="Change API Key"
+                  className="p-2 text-xs text-textSecondary hover:text-primary rounded-md border border-borderNeutral hover:border-primary transition-colors"
+                >
+                  Change API Key
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -680,7 +706,6 @@ const App: React.FC = () => {
                   disabled={isProcessingBlocked}
                 />
               </section>
-
               <section aria-labelledby="file-upload-heading" className="bg-surface shadow-xl rounded-xl p-6">
                 <h2 id="file-upload-heading" className="text-xl font-semibold text-textPrimary mb-4">2. Upload File</h2>
                 <FileUpload
@@ -689,7 +714,6 @@ const App: React.FC = () => {
                   resetSignal={fileUploadResetKey}
                 />
               </section>
-
               <button
                   onClick={handleOpenMappingModal}
                   disabled={!uploadedFile || !canInitiateJobFlow || currentJob?.status !== JobStatus.AWAITING_MAPPING || isProcessingBlocked }
@@ -701,7 +725,6 @@ const App: React.FC = () => {
                   }
                   <span>{getActionButtonText()}</span>
               </button>
-
                {globalError && (
                   <div className="mt-4 p-4 bg-red-700 bg-opacity-30 border border-red-500 rounded-lg text-sm text-red-100">
                       {globalError}
@@ -709,7 +732,6 @@ const App: React.FC = () => {
                   </div>
               )}
             </div>
-
             {/* Column 2: Job Status & Results */}
             <div className="lg:col-span-2 space-y-8">
               <section aria-labelledby="job-status-heading" className="bg-surface shadow-xl rounded-xl p-6">
@@ -720,7 +742,6 @@ const App: React.FC = () => {
                       onCancel={handleResetJob}
                   />
               </section>
-
               {currentJob && (currentJob.status === JobStatus.COMPLETED || currentJob.status === JobStatus.PENDING_REVIEW || (currentJob.status === JobStatus.VALIDATION_WARNING && !currentJob.isTrainingData) ) && !currentJob.isTrainingData && currentJob.transactions.length > 0 && (
                 <section aria-labelledby="transaction-review-heading" className="bg-surface shadow-xl rounded-xl p-0 sm:p-2 md:p-6 overflow-hidden">
                   <h2 id="transaction-review-heading" className="text-xl font-semibold text-textPrimary mb-4 px-6 pt-6 sm:px-4 sm:pt-4 md:px-0 md:pt-0">4. Review Transactions</h2>
@@ -742,87 +763,6 @@ const App: React.FC = () => {
               )}
             </div>
           </div>
-          
-            <section aria-labelledby="data-management-heading" className="mt-12 bg-surface shadow-xl rounded-xl p-6">
-                <h2 id="data-management-heading" className="text-xl font-semibold text-textPrimary mb-6">Data Management</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <h3 className="text-lg font-medium text-textSecondary mb-2">Export Training Data & Rules</h3>
-                        <p className="text-sm text-textSecondary opacity-80 mb-3">
-                            Download clients, books, industries, training transactions, and any custom accounting rules as a JSON file.
-                        </p>
-                        <button
-                            onClick={handleExportTrainingData}
-                            disabled={isProcessingBlocked}
-                            className="w-full sm:w-auto px-5 py-2.5 bg-secondary hover:bg-secondary-dark text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-colors duration-150 ease-in-out text-sm disabled:opacity-50"
-                        >
-                            Export All Data
-                        </button>
-                    </div>
-                    <div>
-                        <h3 className="text-lg font-medium text-textSecondary mb-2">Import Training Data & Rules</h3>
-                        <p className="text-sm text-textSecondary opacity-80 mb-3">
-                            Upload a previously exported JSON file to restore your training data and custom rules. This will add to existing data.
-                        </p>
-                        <input
-                            type="file"
-                            accept=".json"
-                            ref={importFileInputRef}
-                            onChange={handleImportTrainingData}
-                            className="block w-full text-sm text-textSecondary file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary-dark disabled:opacity-50"
-                            disabled={isProcessingBlocked}
-                        />
-                         <p className="text-xs text-textSecondary opacity-70 mt-1">Ensure the file is a previously exported JSON from this application.</p>
-                    </div>
-                </div>
-            </section>
-
-            <section aria-labelledby="rule-customization-heading" className="mt-12 bg-surface shadow-xl rounded-xl p-6">
-                <h2 id="rule-customization-heading" className="text-xl font-semibold text-textPrimary mb-6">Customize Accounting Rules</h2>
-                <p className="text-sm text-textSecondary opacity-80 mb-4">
-                    Upload your own JSON files to override the default accounting logic. Changes are stored locally in your browser.
-                    These custom rules will also be included in the "Export All Data" file.
-                </p>
-                <div className="space-y-6">
-                    {ruleConfigDisplay.map(rule => (
-                        <div key={rule.key} className="p-4 border border-borderNeutral rounded-lg bg-slate-800">
-                            <h4 className="text-md font-medium text-textPrimary mb-1">{rule.label}</h4>
-                            <p className={`text-xs mb-3 ${ruleStatuses[rule.key] ? 'text-green-400' : 'text-yellow-400'}`}>
-                                Current: {ruleStatuses[rule.key] ? 'Custom Version Active' : 'Application Default Active'}
-                            </p>
-                            <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-3 space-y-2 sm:space-y-0">
-                                <input
-                                    type="file"
-                                    accept=".json"
-                                    ref={ruleFileInputRefs[rule.key]}
-                                    onChange={(e) => handleCustomRuleUpload(rule.key, e)}
-                                    className="block w-full sm:w-auto text-sm text-textSecondary file:mr-2 file:py-2 file:px-3 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary-dark disabled:opacity-50"
-                                    disabled={isProcessingBlocked}
-                                />
-                                {ruleStatuses[rule.key] && (
-                                    <button
-                                        onClick={() => handleResetSingleRule(rule.key)}
-                                        disabled={isProcessingBlocked}
-                                        className="px-3 py-2 text-xs text-textSecondary hover:text-primary rounded-md border border-borderNeutral hover:border-primary transition-colors disabled:opacity-50 flex items-center justify-center sm:w-auto w-full"
-                                        title={`Reset ${rule.label} to default`}
-                                    >
-                                        <ResetIcon className="w-4 h-4 mr-1.5"/> Reset to Default
-                                    </button>
-                                )}
-                            </div>
-                        </div>
-                    ))}
-                </div>
-                <div className="mt-8 pt-6 border-t border-borderNeutral">
-                    <button
-                        onClick={handleResetAllRules}
-                        disabled={isProcessingBlocked}
-                        className="w-full sm:w-auto px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-colors duration-150 ease-in-out text-sm disabled:opacity-50 flex items-center justify-center"
-                    >
-                       <ResetIcon className="w-4 h-4 mr-2"/> Reset All Rules to Application Defaults
-                    </button>
-                </div>
-            </section>
           </>
         )}
       </main>
@@ -857,6 +797,83 @@ const App: React.FC = () => {
             modalTitle={currentJob.isTrainingData ? "Map Columns for Training Data" : "Map Columns for Standard Processing"}
         />
       )}
+      <SettingsModal isOpen={isSettingsModalOpen} onClose={() => setIsSettingsModalOpen(false)}>
+              {settingsView === 'export' && (
+                <section>
+                  <h2 className="text-xl font-semibold mb-4">Export Training Data & Rules</h2>
+                  <p className="text-sm text-textSecondary opacity-80 mb-3">
+                    Download clients, books, industries, training transactions, and any custom accounting rules as a JSON file.
+                  </p>
+                  <button
+                    onClick={handleExportTrainingData}
+                    disabled={isProcessingBlocked}
+                    className="w-full px-5 py-2.5 bg-secondary hover:bg-secondary-dark text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-colors duration-150 ease-in-out text-sm disabled:opacity-50"
+                  >
+                    Export All Data
+                  </button>
+                  <div className="mt-8">
+                    <h3 className="text-lg font-medium text-textSecondary mb-2">Import Training Data & Rules</h3>
+                    <input
+                      type="file"
+                      accept=".json"
+                      ref={importFileInputRef}
+                      onChange={handleImportTrainingData}
+                      className="block w-full text-sm text-textSecondary file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary-dark disabled:opacity-50"
+                      disabled={isProcessingBlocked}
+                    />
+                    <p className="text-xs text-textSecondary opacity-70 mt-1">Ensure the file is a previously exported JSON from this application.</p>
+                  </div>
+                </section>
+              )}
+              {settingsView === 'customize' && (
+                <section>
+                  <h2 className="text-xl font-semibold mb-4">Customize Accounting Rules</h2>
+                  <p className="text-sm text-textSecondary opacity-80 mb-4">
+                    Upload your own JSON files to override the default accounting logic. Changes are stored locally in your browser.
+                    These custom rules will also be included in the "Export All Data" file.
+                  </p>
+                  <div className="space-y-6">
+                    {ruleConfigDisplay.map(rule => (
+                      <div key={rule.key} className="p-4 border border-borderNeutral rounded-lg bg-slate-800">
+                        <h4 className="text-md font-medium text-textPrimary mb-1">{rule.label}</h4>
+                        <p className={`text-xs mb-3 ${ruleStatuses[rule.key] ? 'text-green-400' : 'text-yellow-400'}`}>
+                          Current: {ruleStatuses[rule.key] ? 'Custom Version Active' : 'Application Default Active'}
+                        </p>
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-3 space-y-2 sm:space-y-0">
+                          <input
+                            type="file"
+                            accept=".json"
+                            ref={ruleFileInputRefs[rule.key]}
+                            onChange={(e) => handleCustomRuleUpload(rule.key, e)}
+                            className="block w-full sm:w-auto text-sm text-textSecondary file:mr-2 file:py-2 file:px-3 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary-dark disabled:opacity-50"
+                            disabled={isProcessingBlocked}
+                          />
+                          {ruleStatuses[rule.key] && (
+                            <button
+                              onClick={() => handleResetSingleRule(rule.key)}
+                              disabled={isProcessingBlocked}
+                              className="px-3 py-2 text-xs text-textSecondary hover:text-primary rounded-md border border-borderNeutral hover:border-primary transition-colors disabled:opacity-50 flex items-center justify-center sm:w-auto w-full"
+                              title={`Reset ${rule.label} to default`}
+                            >
+                              <ResetIcon className="w-4 h-4 mr-1.5"/> Reset to Default
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="mt-8 pt-6 border-t border-borderNeutral">
+                    <button
+                      onClick={handleResetAllRules}
+                      disabled={isProcessingBlocked}
+                      className="w-full sm:w-auto px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-colors duration-150 ease-in-out text-sm disabled:opacity-50 flex items-center justify-center"
+                    >
+                      <ResetIcon className="w-4 h-4 mr-2"/> Reset All Rules to Application Defaults
+                    </button>
+                  </div>
+                </section>
+              )}
+            </SettingsModal>
     </div>
   );
 };

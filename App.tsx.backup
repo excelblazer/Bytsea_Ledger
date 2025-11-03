@@ -74,11 +74,7 @@ const App: React.FC = () => {
   const canInitiateJobFlow = selectedClient && selectedBook;
 
   useEffect(() => {
-    // Load initial data
-    setClients(dataService.getClients());
-    setBooks(dataService.getBooks());
-    setIndustries(dataService.getIndustries());
-    updateRuleStatuses();
+    loadInitialData();
     
     // Check if user has accepted privacy policy
     const privacyPolicyAccepted = dataService.getPrivacyPolicyAccepted();
@@ -97,6 +93,14 @@ const App: React.FC = () => {
       setApiKeyLoading(false);
     }
   }, []);
+
+  const loadInitialData = () => {
+    setClients(dataService.getClients());
+    setBooks(dataService.getBooks());
+    setIndustries(dataService.getIndustries());
+    // Refresh rule status on load
+    updateRuleStatuses();
+  };
 
   const [ruleStatuses, setRuleStatuses] = useState({
     accountingRules: false,
@@ -567,10 +571,7 @@ const App: React.FC = () => {
             } else {
                  setImportExportFeedback({ type: 'success', message: `Import successful: ${feedbackMessage}` });
             }
-            setClients(dataService.getClients());
-            setBooks(dataService.getBooks());
-            setIndustries(dataService.getIndustries());
-            updateRuleStatuses();
+            loadInitialData(); 
             if (currentJob) handleResetJob(); 
 
         } catch (error) {
@@ -647,7 +648,7 @@ const App: React.FC = () => {
     ) {
       jobDetailsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
-  }, [currentJob]);
+  }, [currentJob?.status]);
 
   // Scroll to Review Categorisation when processing is complete
   useEffect(() => {
@@ -659,7 +660,7 @@ const App: React.FC = () => {
     ) {
       reviewRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
-  }, [currentJob]);
+  }, [currentJob?.status]);
 
 
   // Check if this user has accepted the privacy policy when needed
@@ -788,7 +789,7 @@ const App: React.FC = () => {
         {blockMainContent ? (
           <div className="text-center p-8 bg-slate-800/50 rounded-lg border border-slate-700 shadow-lg max-w-xl mx-auto mt-6">
             <svg xmlns="http://www.w3.org/2000/svg" className="w-16 h-16 mx-auto text-blue-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
             </svg>
             <h2 className="text-xl font-semibold mb-2 text-primary">Privacy Policy Acceptance Required</h2>
             <p className="text-slate-300 mb-6">
@@ -936,10 +937,7 @@ const App: React.FC = () => {
             // Show a welcome message
             setGlobalError(null); // Clear any errors
             // Load initial data again to ensure everything is set up
-            setClients(dataService.getClients());
-            setBooks(dataService.getBooks());
-            setIndustries(dataService.getIndustries());
-            updateRuleStatuses();
+            loadInitialData();
           }
         }}
         onDecline={() => {

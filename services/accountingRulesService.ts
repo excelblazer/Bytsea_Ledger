@@ -1,4 +1,3 @@
-
 // Default rule data (previously top-level in this file)
 const DEFAULT_ACCOUNTING_RULES_DATA = {
   "accounting_rules": {
@@ -40,7 +39,7 @@ const DEFAULT_COA_ALTERNATE_NAMES_DATA = {
 };
 
 
-import { AccountingCategory, RuleFileContent, RuleFileType } from '../types';
+import { AccountingCategory, RuleFileContent, RuleFileType, AccountingRulesData, CoaValidationData, CoaAlternateNamesData } from '../types';
 import { STORAGE_KEYS } from '../constants';
 
 
@@ -57,7 +56,7 @@ const getStoredJson = <T>(key: string): T | null => {
 };
 
 // Helper to set item in localStorage as JSON string
-const setStoredJson = (key: string, value: any): void => {
+const setStoredJson = (key: string, value: unknown): void => {
     try {
         localStorage.setItem(key, JSON.stringify(value));
     } catch (error) {
@@ -72,9 +71,9 @@ export interface NormalizedCategoryResult {
 }
 
 export const getRuleFiles = (): RuleFileContent => {
-  const customAccountingRules = getStoredJson<any>(STORAGE_KEYS.CUSTOM_ACCOUNTING_RULES);
-  const customCoaValidationRules = getStoredJson<any>(STORAGE_KEYS.CUSTOM_COA_VALIDATION_RULES);
-  const customCoaAlternateNames = getStoredJson<any>(STORAGE_KEYS.CUSTOM_COA_ALTERNATE_NAMES);
+  const customAccountingRules = getStoredJson<AccountingRulesData>(STORAGE_KEYS.CUSTOM_ACCOUNTING_RULES);
+  const customCoaValidationRules = getStoredJson<CoaValidationData>(STORAGE_KEYS.CUSTOM_COA_VALIDATION_RULES);
+  const customCoaAlternateNames = getStoredJson<CoaAlternateNamesData>(STORAGE_KEYS.CUSTOM_COA_ALTERNATE_NAMES);
 
   return {
     accountingRules: customAccountingRules || DEFAULT_ACCOUNTING_RULES_DATA,
@@ -194,7 +193,7 @@ export const normalizeCategoryFromString = (
     const findMatchRecursive = (obj: any, currentBroadCategoryGuess: AccountingCategory): { specificName: string, broadCategory: AccountingCategory } | null => {
         if (typeof obj !== 'object' || obj === null) return null;
 
-        let primaryName = obj.primary_name || '';
+        const primaryName = obj.primary_name || '';
         let currentBroad = primaryName ? mapSimpleStringToEnum(primaryName) : currentBroadCategoryGuess;
         if (currentBroad === AccountingCategory.UNKNOWN) currentBroad = currentBroadCategoryGuess;
 
@@ -269,7 +268,7 @@ export const getAllSpecificCoANames = (): { specificName: string, broadCategory:
              if (key === 'alternative_names' || key === 'primary_name' || key === 'abbreviations' || key === 'typos' || key === 'notes' || key === 'erp_variations' || key === 'hierarchical_patterns' || key === 'industry_specific') continue;
 
             if (Array.isArray(obj[key])) {
-                obj[key].forEach((item: any) => traverse(item, primaryName ? mapSimpleStringToEnum(primaryName) : parentBroadCategory, true));
+                obj[key].forEach((item: unknown) => traverse(item, primaryName ? mapSimpleStringToEnum(primaryName) : parentBroadCategory, true));
             } else if (typeof obj[key] === 'object') {
                 traverse(obj[key], primaryName ? mapSimpleStringToEnum(primaryName) : parentBroadCategory, true);
             }

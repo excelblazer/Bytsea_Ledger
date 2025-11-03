@@ -21,8 +21,6 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFileUploaded, disabled, reset
   const [rawRowsPreview, setRawRowsPreview] = useState<string[][]>([]);
   const [headerRowNumberInput, setHeaderRowNumberInput] = useState<string>("1");
   const [isStartRowConfirmed, setIsStartRowConfirmed] = useState<boolean>(false);
-  const [confirmedFileName, setConfirmedFileName] = useState<string | null>(null);
-  const [confirmedFileSize, setConfirmedFileSize] = useState<number | null>(null);
   const [isUploadClicked, setIsUploadClicked] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -37,7 +35,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFileUploaded, disabled, reset
       parseFileForPreviewAndStore(selectedRawFile);
       setIsUploadClicked(true);
     }
-  }, [triggerUpload]);
+  }, [triggerUpload, selectedRawFile, isStartRowConfirmed, parseFileForPreviewAndStore]);
 
   const resetInternalState = useCallback(() => {
     setSelectedRawFile(null);
@@ -47,8 +45,6 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFileUploaded, disabled, reset
     setRawRowsPreview([]);
     setHeaderRowNumberInput("1");
     setIsStartRowConfirmed(false);
-    setConfirmedFileName(null);
-    setConfirmedFileSize(null);
     setIsUploadClicked(false);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
@@ -61,7 +57,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFileUploaded, disabled, reset
     }
   }, [resetSignal, resetInternalState]);
 
-  const parseFileForPreviewAndStore = (file: File) => {
+  const parseFileForPreviewAndStore = useCallback((file: File) => {
     resetInternalState();
     setError(null);
     setSelectedRawFile(file);
@@ -112,7 +108,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFileUploaded, disabled, reset
               // Ensure row.values is an array
               const valuesArr = Array.isArray(row.values) ? row.values : [];
               if (rowNumber <= MAX_PREVIEW_ROWS) {
-                jsonData.push(valuesArr.slice(1).map((cell: any) => cell === null || cell === undefined ? '' : String(cell)));
+                jsonData.push(valuesArr.slice(1).map((cell: unknown) => cell === null || cell === undefined ? '' : String(cell)));
               }
             });
             setRawRowsPreview(jsonData);
@@ -141,7 +137,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFileUploaded, disabled, reset
     } else { 
         reader.readAsArrayBuffer(file);
     }
-  };
+  }, [resetInternalState]);
   
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -165,7 +161,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFileUploaded, disabled, reset
       parseFileForPreviewAndStore(selectedRawFile);
       setIsUploadClicked(true);
     }
-  }, [triggerUpload]);
+  }, [triggerUpload, selectedRawFile, isStartRowConfirmed, parseFileForPreviewAndStore]);
 
   const handleDrop = useCallback((event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
@@ -177,7 +173,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFileUploaded, disabled, reset
       parseFileForPreviewAndStore(event.dataTransfer.files[0]);
       event.dataTransfer.clearData();
     }
-  }, [disabled]);
+  }, [disabled, parseFileForPreviewAndStore]);
 
   const handleDragOver = useCallback((event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
@@ -221,11 +217,11 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFileUploaded, disabled, reset
             const allRows: string[][] = [];
             let maxColCount = 0;
             worksheet.eachRow({ includeEmpty: true }, (row) => {
-                const values = (row.values as any[]).slice(1).map(cell => {
+                const values = (row.values as unknown[]).slice(1).map((cell: unknown) => {
                     if (cell === null || cell === undefined) return '';
                     if (typeof cell === 'number') return cell.toString();
                     if (typeof cell === 'string') return cell.trim();
-                    if (typeof cell === 'object' && cell.text) return String(cell.text).trim();
+                    if (typeof cell === 'object' && (cell as any).text) return String((cell as any).text).trim();
                     return String(cell).trim();
                 });
                 allRows.push(values);
@@ -251,8 +247,6 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFileUploaded, disabled, reset
         }
 
         setIsStartRowConfirmed(true);
-        setConfirmedFileName(selectedRawFile.name);
-        setConfirmedFileSize(selectedRawFile.size);
         onFileUploaded(selectedRawFile, finalCsvContent, rawFileType);
 
     } catch (processingError) {
@@ -357,13 +351,12 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFileUploaded, disabled, reset
       </OffsetModal>
 
       {/* File ready state */}
-      {isStartRowConfirmed && confirmedFileName && (
+      {isStartRowConfirmed && (
         <div className="mt-3 p-4 bg-green-800 bg-opacity-30 border border-green-600 rounded-lg text-sm text-green-200 flex items-center justify-between">
             <div className="flex items-center">
                 <CheckCircleIcon className="w-5 h-5 mr-3 text-green-400 flex-shrink-0" />
                 <div>
-                    File ready: <span className="font-semibold">{confirmedFileName}</span>
-                    {confirmedFileSize && ` (${(confirmedFileSize / 1024).toFixed(1)} KB)`}
+                    File ready: <span className="font-semibold">{selectedRawFile?.name}</span>
                     <span className="block text-xs text-green-300">Data will be processed from row {headerRowNumberInput} of the original file.</span>
                 </div>
             </div>

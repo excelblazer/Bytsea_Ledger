@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { Client, Book, Industry, UserColumnMapping, MappedTrainingTransaction, ExportedTrainingDataContainer, RuleFileContent } from '../types';
+import { Client, Book, Industry, UserColumnMapping, MappedTrainingTransaction, ExportedTrainingDataContainer, ColumnMappingTemplate, ClientConfigTemplate } from '../types';
 import { INITIAL_CLIENTS, INITIAL_BOOKS, INITIAL_INDUSTRIES, STORAGE_KEYS } from '../constants';
 import * as accountingRulesService from './accountingRulesService'; // Import the service
 
@@ -226,7 +226,7 @@ export const importAllTrainingData = (data: ExportedTrainingDataContainer): { su
                     addIndustry({ name: importedIndustry.name }); 
                     importedIndustriesCount++;
                 }
-            } catch (e) {
+            } catch {
                  // errors.push(`Failed to add industry ${importedIndustry.name}: ${(e as Error).message}`);
             }
         }
@@ -302,4 +302,72 @@ export const importAllTrainingData = (data: ExportedTrainingDataContainer): { su
     }
 
     return { summary, errors };
+};
+
+// --- Template Management Functions ---
+
+// Column Mapping Templates
+export const getColumnMappingTemplates = (): ColumnMappingTemplate[] => {
+    return getItem<ColumnMappingTemplate[]>(STORAGE_KEYS.COLUMN_MAPPING_TEMPLATES) || [];
+};
+
+export const saveColumnMappingTemplate = (template: Omit<ColumnMappingTemplate, 'id' | 'createdAt' | 'usageCount'>): ColumnMappingTemplate => {
+    const templates = getColumnMappingTemplates();
+    const newTemplate: ColumnMappingTemplate = {
+        ...template,
+        id: uuidv4(),
+        createdAt: new Date(),
+        usageCount: 0
+    };
+    setItem(STORAGE_KEYS.COLUMN_MAPPING_TEMPLATES, [...templates, newTemplate]);
+    return newTemplate;
+};
+
+export const updateColumnMappingTemplateUsage = (templateId: string): void => {
+    const templates = getColumnMappingTemplates();
+    const updatedTemplates = templates.map(template =>
+        template.id === templateId
+            ? { ...template, lastUsed: new Date(), usageCount: template.usageCount + 1 }
+            : template
+    );
+    setItem(STORAGE_KEYS.COLUMN_MAPPING_TEMPLATES, updatedTemplates);
+};
+
+export const deleteColumnMappingTemplate = (templateId: string): void => {
+    const templates = getColumnMappingTemplates();
+    const filteredTemplates = templates.filter(template => template.id !== templateId);
+    setItem(STORAGE_KEYS.COLUMN_MAPPING_TEMPLATES, filteredTemplates);
+};
+
+// Client Configuration Templates
+export const getClientConfigTemplates = (): ClientConfigTemplate[] => {
+    return getItem<ClientConfigTemplate[]>(STORAGE_KEYS.CLIENT_CONFIG_TEMPLATES) || [];
+};
+
+export const saveClientConfigTemplate = (template: Omit<ClientConfigTemplate, 'id' | 'createdAt' | 'usageCount'>): ClientConfigTemplate => {
+    const templates = getClientConfigTemplates();
+    const newTemplate: ClientConfigTemplate = {
+        ...template,
+        id: uuidv4(),
+        createdAt: new Date(),
+        usageCount: 0
+    };
+    setItem(STORAGE_KEYS.CLIENT_CONFIG_TEMPLATES, [...templates, newTemplate]);
+    return newTemplate;
+};
+
+export const updateClientConfigTemplateUsage = (templateId: string): void => {
+    const templates = getClientConfigTemplates();
+    const updatedTemplates = templates.map(template =>
+        template.id === templateId
+            ? { ...template, lastUsed: new Date(), usageCount: template.usageCount + 1 }
+            : template
+    );
+    setItem(STORAGE_KEYS.CLIENT_CONFIG_TEMPLATES, updatedTemplates);
+};
+
+export const deleteClientConfigTemplate = (templateId: string): void => {
+    const templates = getClientConfigTemplates();
+    const filteredTemplates = templates.filter(template => template.id !== templateId);
+    setItem(STORAGE_KEYS.CLIENT_CONFIG_TEMPLATES, filteredTemplates);
 };

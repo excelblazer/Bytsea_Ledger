@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { UserColumnMapping, RawTransactionData, TargetFieldConfigItem } from '../types';
+import { TargetFieldConfigItem, ColumnMappingTemplate, ClientConfigTemplate, UserColumnMapping } from '../types';
+import TemplateManager from './TemplateManager';
 
 interface ColumnMappingModalProps {
   isOpen: boolean;
@@ -28,6 +29,7 @@ const ColumnMappingModal: React.FC<ColumnMappingModalProps> = ({
 }) => {
   const [currentMapping, setCurrentMapping] = useState<Record<string, string>>({});
   const [error, setError] = useState<string | null>(null);
+  const [isTemplateManagerOpen, setIsTemplateManagerOpen] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
@@ -56,7 +58,15 @@ const ColumnMappingModal: React.FC<ColumnMappingModalProps> = ({
   }, [isOpen, csvHeaders, targetFields]);
 
   const handleSelectChange = (targetFieldKey: string, csvHeader: string) => {
-    setCurrentMapping(prev => ({ ...prev, [targetFieldKey]: csvHeader || undefined }));
+    setCurrentMapping(prev => {
+      const newMapping = { ...prev };
+      if (csvHeader) {
+        newMapping[targetFieldKey] = csvHeader;
+      } else {
+        delete newMapping[targetFieldKey];
+      }
+      return newMapping;
+    });
     if(error) setError(null);
   };
 
@@ -103,6 +113,13 @@ const ColumnMappingModal: React.FC<ColumnMappingModalProps> = ({
     onSaveMapping(currentMapping);
   };
 
+  const handleLoadTemplate = (template: ColumnMappingTemplate | ClientConfigTemplate) => {
+    if ('mapping' in template) {
+      setCurrentMapping(template.mapping as unknown as Record<string, string>);
+      setError(null);
+    }
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -110,7 +127,15 @@ const ColumnMappingModal: React.FC<ColumnMappingModalProps> = ({
       <div className="bg-surface p-6 rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] flex flex-col">
         <div className="flex justify-between items-center mb-2">
           <h2 className="text-xl font-semibold text-textPrimary">{modalTitle}</h2>
-          <button onClick={onClose} className="text-textSecondary hover:text-textPrimary text-2xl transition-colors">&times;</button>
+          <div className="flex items-center space-x-3">
+            <button
+              onClick={() => setIsTemplateManagerOpen(true)}
+              className="px-3 py-1 text-sm text-textSecondary hover:text-primary border border-borderNeutral rounded-md transition-colors"
+            >
+              Templates
+            </button>
+            <button onClick={onClose} className="text-textSecondary hover:text-textPrimary text-2xl transition-colors">&times;</button>
+          </div>
         </div>
         <p className="text-xs text-textSecondary opacity-75 mb-4 italic">
             File: {fileName}
@@ -201,6 +226,14 @@ const ColumnMappingModal: React.FC<ColumnMappingModalProps> = ({
           </button>
         </div>
       </div>
+
+      <TemplateManager
+        isOpen={isTemplateManagerOpen}
+        onClose={() => setIsTemplateManagerOpen(false)}
+        templateType="columnMapping"
+        onLoadTemplate={handleLoadTemplate}
+        currentMapping={currentMapping as unknown as UserColumnMapping}
+      />
     </div>
   );
 };

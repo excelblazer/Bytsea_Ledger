@@ -1,4 +1,3 @@
-
 import { MappedTrainingTransaction, RawTransactionData, CategorizationResult, AccountingCategory, PredictionSourceType, Industry, RuleFileContent } from '../types';
 import { normalizeCategoryFromString, NormalizedCategoryResult } from './accountingRulesService';
 
@@ -58,30 +57,6 @@ export const findMatchInTrainingData = (
     }
   }
   return null;
-};
-
-const applySimpleRules = (
-    description: string,
-    rulesToScan: any[], 
-    ruleKeyField: string, 
-    keywordsField: string, 
-    ruleFileContent: RuleFileContent
-): { specificName: string, broadCategory: AccountingCategory } | null => {
-    const lowerDesc = description.toLowerCase();
-    for (const rule of rulesToScan) {
-        if (rule[keywordsField] && Array.isArray(rule[keywordsField])) {
-            for (const keyword of rule[keywordsField]) {
-                if (lowerDesc.includes(keyword.toLowerCase())) {
-                    const categoryName = rule[ruleKeyField];
-                    const normalizedResult = normalizeCategoryFromString(categoryName, ruleFileContent);
-                    if (normalizedResult.broadCategory !== AccountingCategory.UNKNOWN) {
-                        return { specificName: normalizedResult.specificName, broadCategory: normalizedResult.broadCategory };
-                    }
-                }
-            }
-        }
-    }
-    return null;
 };
 
 export const findMatchViaIndustryRules = (

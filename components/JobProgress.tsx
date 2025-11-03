@@ -1,5 +1,5 @@
 import React from 'react';
-import { ProcessingJob, JobStatus, DataValidationError } from '../types';
+import { ProcessingJob, JobStatus } from '../types';
 import StatusBadge from './StatusBadge';
 import LoadingSpinner from './LoadingSpinner';
 import { CheckCircleIcon, XCircleIcon, CogIcon, ArrowPathIcon, ExclamationTriangleIcon } from './icons';

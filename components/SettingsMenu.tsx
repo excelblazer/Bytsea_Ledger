@@ -1,7 +1,7 @@
 import React from 'react';
 
 interface SettingsMenuProps {
-  onSelect: (option: 'apikey' | 'export' | 'customize' | null) => void;
+  onSelect: (option: 'apikey' | 'export' | 'customize' | 'ai' | null) => void;
 }
 
 const SettingsMenu: React.FC<SettingsMenuProps> = ({ onSelect }) => {
@@ -25,6 +25,12 @@ const SettingsMenu: React.FC<SettingsMenuProps> = ({ onSelect }) => {
           onClick={() => onSelect('customize')}
         >
           Customize Accounting Rules
+        </button>
+        <button
+          className="w-full text-left px-4 py-2 text-sm text-textPrimary hover:bg-primary hover:text-white"
+          onClick={() => onSelect('ai')}
+        >
+          AI Preferences
         </button>
       </div>
     </div>

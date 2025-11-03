@@ -1,7 +1,7 @@
-
 import { v4 as uuidv4 } from 'uuid';
 import { categorizeTransactionWithGemini } from './geminiService';
 import { getRuleFiles } from './accountingRulesService';
+import { RuleBasedCategorizer } from './ruleBasedCategorizer';
 import * as dataService from './dataService';
 import { 
     Transaction, AccountingCategory, RawTransactionData, Industry, Client, Book,
@@ -266,7 +266,9 @@ const getHierarchicalCategorization = async (
     client: Client,
     book: Book,
     industry: Industry | undefined,
-    ruleFileContent: RuleFileContent
+    ruleFileContent: RuleFileContent,
+    useAI: boolean = false,
+    apiKey?: string
 ): Promise<CategorizationResult> => {
     
     const bookTrainingData = dataService.getTrainingTransactions(client.id, book.id);
@@ -287,6 +289,16 @@ const getHierarchicalCategorization = async (
     result = findMatchViaGlobalRules(rawTx, ruleFileContent);
     if (result) return result;
 
+    // Try rule-based categorization as fallback before AI
+    try {
+      result = RuleBasedCategorizer.categorizeTransaction(rawTx, industry);
+      if (result && result.confidence > 0.3) { // Only use if confidence is reasonable
+        return result;
+      }
+    } catch (error) {
+      console.warn('Rule-based categorization failed:', error);
+    }
+
     const descriptionForAI = rawTx.Description || "";
     if (!descriptionForAI) { 
         return { 
@@ -296,7 +308,33 @@ const getHierarchicalCategorization = async (
             predictionSource: PredictionSourceType.UNKNOWN_SOURCE 
         };
     }
-    return categorizeTransactionWithGemini(descriptionForAI, industry?.name);
+
+    // Try AI categorization only if user has opted in and has API key
+    if (useAI && apiKey) {
+      try {
+        return await categorizeTransactionWithGemini(descriptionForAI, industry?.name);
+      } catch (error) {
+        console.warn('AI categorization failed, using rule-based fallback:', error);
+        // Fall back to rule-based categorization
+        try {
+          result = RuleBasedCategorizer.categorizeTransaction(rawTx, industry);
+          if (result && result.confidence > 0.3) {
+            return result;
+          }
+        } catch (fallbackError) {
+          console.warn('Rule-based fallback also failed:', fallbackError);
+        }
+      }
+    }
+
+    // Return rule-based result or unknown
+    return result || {
+      specificCategory: "Uncategorized",
+      broadCategory: AccountingCategory.UNKNOWN,
+      confidence: 0.1,
+      predictionSource: PredictionSourceType.UNKNOWN_SOURCE,
+      transactionType: "Expense"
+    };
 };
 
 
@@ -305,6 +343,8 @@ export const categorizeBatchTransactions = async (
     client: Client, 
     book: Book,     
     industry?: Industry,
+    useAI: boolean = false,
+    apiKey?: string,
     onProgress?: (progress: number, processedRows: number, totalRows: number) => void
 ): Promise<Transaction[]> => { 
     const categorizedTransactions: Transaction[] = [];
@@ -315,7 +355,7 @@ export const categorizeBatchTransactions = async (
     let processedRows = 0;
 
     for (const rawTx of rawTransactions) {
-        let descriptionForProcessing = rawTx.Description || "";
+        const descriptionForProcessing = rawTx.Description || "";
         
         let amount: number;
         if (rawTx.Amount) {
@@ -347,7 +387,7 @@ export const categorizeBatchTransactions = async (
             continue;
         }
         
-        const aiResult: CategorizationResult = await getHierarchicalCategorization(rawTx, client, book, industry, ruleFileContent);
+        const aiResult: CategorizationResult = await getHierarchicalCategorization(rawTx, client, book, industry, ruleFileContent, useAI, apiKey);
         
         categorizedTransactions.push({
             id: uuidv4(),

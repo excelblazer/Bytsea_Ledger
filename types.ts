@@ -1,4 +1,3 @@
-
 export enum AccountingCategory {
     ASSETS = "Assets",
     LIABILITIES = "Liabilities",
@@ -188,11 +187,27 @@ export interface ValidatedParseResult<T> {
 
 // Represents the content of the three main rule files
 export interface RuleFileContent {
-  accountingRules: any; // Define more specific type if structure is fixed
-  coaValidationRules: any; // Define more specific type
-  coaAlternateNames: any; // Define more specific type
+  accountingRules: AccountingRulesData;
+  coaValidationRules: CoaValidationData;
+  coaAlternateNames: CoaAlternateNamesData;
 }
 
+// Basic interfaces for rule file structures
+export interface AccountingRulesData {
+  metadata?: any;
+  business_context_classification?: any;
+  [key: string]: any;
+}
+
+export interface CoaValidationData {
+  chart_of_accounts_validation?: any;
+  [key: string]: any;
+}
+
+export interface CoaAlternateNamesData {
+  chart_of_accounts_validation?: any;
+  [key: string]: any;
+}
 export type RuleFileType = 'accountingRules' | 'coaValidation' | 'coaAlternateNames';
 
 
@@ -202,4 +217,66 @@ export interface ExportedTrainingDataContainer {
   industries: Industry[];
   trainingTransactions: MappedTrainingTransaction[];
   customRules?: RuleFileContent; // To store user-customized rules
+}
+
+export interface ValidationIssue {
+  type: 'error' | 'warning' | 'info';
+  severity: 'critical' | 'high' | 'medium' | 'low';
+  category: 'duplicates' | 'missing_data' | 'format' | 'outliers' | 'consistency' | 'quality';
+  rowIndex?: number;
+  field?: string;
+  message: string;
+  suggestion?: string;
+  canAutoFix: boolean;
+}
+
+export interface ValidationSuggestion {
+  id: string;
+  title: string;
+  description: string;
+  impact: 'high' | 'medium' | 'low';
+  effort: 'auto' | 'manual' | 'review';
+  action: () => void;
+  preview?: string;
+}
+
+export interface DataQualityMetrics {
+  totalRows: number;
+  validRows: number;
+  duplicateRows: number;
+  missingDataRows: number;
+  invalidFormatRows: number;
+  outlierRows: number;
+  qualityScore: number; // 0-100
+}
+
+export interface ValidationResult {
+  metrics: DataQualityMetrics;
+  issues: ValidationIssue[];
+  suggestions: ValidationSuggestion[];
+  report: DataValidationReport;
+}
+
+// Template Types
+export interface ColumnMappingTemplate {
+  id: string;
+  name: string;
+  description?: string;
+  isTrainingData: boolean;
+  mapping: UserColumnMapping;
+  createdAt: Date;
+  lastUsed?: Date;
+  usageCount: number;
+}
+
+export interface ClientConfigTemplate {
+  id: string;
+  name: string;
+  description?: string;
+  client: Client;
+  books: Book[];
+  industry?: Industry;
+  createdAt: Date;
+  lastUsed?: Date;
+  usageCount: number;
 }
